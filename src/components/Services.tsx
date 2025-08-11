@@ -1,42 +1,42 @@
-import { Palette, Code, Smartphone, Globe, Zap, Eye } from "lucide-react";
+import { Sword, Pickaxe, Shield, Crown, Zap, Users } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 
 const Services = () => {
   const services = [
     {
-      icon: Palette,
-      title: "Brand Design",
-      description: "Vytváříme jedinečné vizuální identity, které vaši značku odliší od konkurence.",
+      icon: Sword,
+      title: "PvP Arény",
+      description: "Epické souboje v profesionálně navržených arénách s unikátními pravidly a odměnami.",
       gradient: "from-primary to-secondary"
     },
     {
-      icon: Code,
-      title: "Web Development",
-      description: "Moderní webové aplikace s nejnovějšími technologiemi a responsivním designem.",
+      icon: Pickaxe,
+      title: "Survival Svět",
+      description: "Obrovský survival svět s vlastními dungeony, bossmi a skrytými poklady čekajícími na objevení.",
       gradient: "from-secondary to-accent"
     },
     {
-      icon: Smartphone,
-      title: "Mobile Apps",
-      description: "Intuitivní mobilní aplikace pro iOS a Android s focus na uživatelský zážitek.",
+      icon: Shield,
+      title: "Vlastní Města",
+      description: "Vytvoř si vlastní město, pozvi přátele a spravuj svou říši s pokročilým town systémem.",
       gradient: "from-accent to-primary"
     },
     {
-      icon: Globe,
-      title: "Digital Marketing",
-      description: "Komplexní digitální strategie pro růst vaší online přítomnosti.",
+      icon: Crown,
+      title: "Ranking Systém",
+      description: "Získávej zkušenosti, leveluj svou postavu a získej prestižní tituly a výhody.",
       gradient: "from-primary to-accent"
     },
     {
       icon: Zap,
-      title: "Performance",
-      description: "Optimalizace výkonu pro rychlé načítání a lepší konverze.",
+      title: "Custom Módy",
+      description: "Unikátní módy a pluginy vytvořené speciálně pro Crafmaga server.",
       gradient: "from-secondary to-primary"
     },
     {
-      icon: Eye,
-      title: "UX/UI Design",
-      description: "Uživatelsky přívětivé rozhraní s důrazem na intuitivní navigaci.",
+      icon: Users,
+      title: "Aktivní Komunita",
+      description: "Připoj se k přátelské komunitě hráčů, účastni se eventů a soutěží o úžasné ceny.",
       gradient: "from-accent to-secondary"
     }
   ];
@@ -52,11 +52,11 @@ const Services = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              Naše Služby
+              Herní Módy
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Specializujeme se na kompletní digitální řešení od návrhu po implementaci
+            Objevuj nekonečné možnosti na našem serveru s unikátními herními módy a funkcemi
           </p>
         </div>
 

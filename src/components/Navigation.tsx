@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sword } from "lucide-react";
 import { Button } from "./ui/button";
+import crafmagaLogo from "@/assets/crafmaga-logo.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,9 +18,10 @@ const Navigation = () => {
 
   const navItems = [
     { name: "Domů", href: "#home" },
-    { name: "Služby", href: "#services" },
-    { name: "Portfolio", href: "#portfolio" },
-    { name: "O nás", href: "#about" },
+    { name: "Herní Módy", href: "#services" },
+    { name: "Tým", href: "#team" },
+    { name: "Hlasování", href: "#voting" },
+    { name: "Dynmap", href: "#dynmap" },
     { name: "Kontakt", href: "#contact" },
   ];
 
@@ -33,11 +35,9 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
+            <img src={crafmagaLogo} alt="Crafmaga Logo" className="w-10 h-10" />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Studio
+              CRAFMAGA
             </span>
           </div>
 
@@ -60,7 +60,8 @@ const Navigation = () => {
             <Button 
               className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl hover-lift"
             >
-              Začít Projekt
+              <Sword className="mr-2 w-4 h-4" />
+              Připojit se
             </Button>
           </div>
 
@@ -99,7 +100,8 @@ const Navigation = () => {
                 <Button 
                   className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl"
                 >
-                  Začít Projekt
+                  <Sword className="mr-2 w-4 h-4" />
+                  Připojit se
                 </Button>
               </div>
             </div>

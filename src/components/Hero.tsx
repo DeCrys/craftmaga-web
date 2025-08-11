@@ -1,6 +1,7 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sword, Users, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
-import heroImage from "@/assets/hero-bg.jpg";
+import heroImage from "@/assets/minecraft-hero-bg.jpg";
+import crafmagaLogo from "@/assets/crafmaga-logo.png";
 
 const Hero = () => {
   return (
@@ -20,20 +21,27 @@ const Hero = () => {
 
       {/* Main Content */}
       <div className="relative z-10 text-center px-6 max-w-6xl mx-auto">
-        <div className="inline-flex items-center gap-2 bg-muted/20 backdrop-blur-sm border border-border/20 rounded-full px-4 py-2 mb-8 animate-fade-in">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium">Creative Studio 2024</span>
+        <div className="inline-flex items-center gap-3 bg-muted/20 backdrop-blur-sm border border-border/20 rounded-full px-6 py-3 mb-8 animate-fade-in">
+          <img src={crafmagaLogo} alt="Crafmaga Logo" className="w-8 h-8" />
+          <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">CRAFMAGA</span>
         </div>
 
         <h1 className="hero-text mb-6 animate-slide-up">
-          Kreativní Studio
+          Minecraft Server
           <br />
-          <span className="block">Pro Budoucnost</span>
+          <span className="block">Pro Legendy</span>
         </h1>
 
+        <div className="mb-8 animate-slide-up animation-delay-150">
+          <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-xl px-6 py-3">
+            <MapPin className="w-5 h-5 text-primary" />
+            <span className="text-xl font-mono font-bold text-primary">play.crafmaga.cz</span>
+          </div>
+        </div>
+
         <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed animate-slide-up animation-delay-200">
-          Vytváříme digitální zážitky, které inspirují a pohybují světem vpřed. 
-          Spojujeme kreativitu s technologií pro výjimečné výsledky.
+          Připoj se k největšímu dobrodružství! Vytvárej, bojuj a objevuj nekonečné možnosti 
+          v našem unikátním světě plném magie a legend.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-slide-up animation-delay-400">
@@ -41,7 +49,8 @@ const Hero = () => {
             size="lg" 
             className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-2xl hover-lift hover-glow transition-all duration-500"
           >
-            Prozkoumat Portfolio
+            <Sword className="mr-2 w-5 h-5" />
+            Připojit se
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
 
@@ -50,17 +59,18 @@ const Hero = () => {
             size="lg"
             className="glass-card px-8 py-6 text-lg font-semibold rounded-2xl hover-lift border-primary/20 hover:border-primary/40 bg-card/20"
           >
-            Naše Služby
+            <Users className="mr-2 w-5 h-5" />
+            Komunita
           </Button>
         </div>
 
         {/* Stats */}
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 animate-fade-in animation-delay-600">
           {[
-            { number: "150+", label: "Dokončené Projekty" },
-            { number: "50+", label: "Spokojených Klientů" },
-            { number: "5+", label: "Let Zkušeností" },
-            { number: "24/7", label: "Podpora" }
+            { number: "500+", label: "Aktivních Hráčů" },
+            { number: "50+", label: "Unikátních Módů" },
+            { number: "3+", label: "Roky Online" },
+            { number: "24/7", label: "Server Běží" }
           ].map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.number}</div>
