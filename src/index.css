@@ -2,41 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Professional Creative Studio Design System
 All colors MUST be HSL.
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base Colors */
+    --background: 230 35% 7%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Glass morphism */
+    --glass: 230 35% 12%;
+    --glass-border: 210 40% 80%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Cards */
+    --card: 230 35% 10%;
+    --card-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Popover */
+    --popover: 230 35% 8%;
+    --popover-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Primary - Electric Blue */
+    --primary: 230 100% 65%;
+    --primary-foreground: 230 35% 7%;
+    --primary-glow: 230 100% 75%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Secondary - Purple */
+    --secondary: 270 100% 70%;
+    --secondary-foreground: 230 35% 7%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Cyan */
+    --accent: 180 100% 70%;
+    --accent-foreground: 230 35% 7%;
 
-    --destructive: 0 84.2% 60.2%;
+    /* Muted */
+    --muted: 230 35% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders & Inputs */
+    --border: 230 35% 20%;
+    --input: 230 35% 15%;
+    --ring: 230 100% 65%;
 
-    --radius: 0.5rem;
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--glass) / 0.7), hsl(var(--glass) / 0.3));
+    --gradient-glow: radial-gradient(circle at center, hsl(var(--primary-glow) / 0.4), transparent 70%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 50px hsl(var(--primary) / 0.3);
+    --shadow-card: 0 8px 32px hsl(230 35% 5% / 0.4);
+    --shadow-elegant: 0 20px 40px -10px hsl(var(--primary) / 0.2);
+
+    /* Effects */
+    --blur: 16px;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +132,64 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-poppins overflow-x-hidden;
+    background: var(--gradient-glow), hsl(var(--background));
+  }
+}
+
+@layer components {
+  /* Glass morphism components */
+  .glass-card {
+    @apply relative backdrop-blur-md border border-glass-border/20;
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .hero-text {
+    @apply font-bold text-5xl md:text-7xl leading-tight;
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-effect {
+    @apply relative;
+  }
+
+  .glow-effect::before {
+    @apply content-[''] absolute inset-0 -z-10 rounded-inherit;
+    background: var(--gradient-primary);
+    filter: blur(20px);
+    opacity: 0.3;
+  }
+
+  /* Hover animations */
+  .hover-lift {
+    @apply transition-all duration-500 ease-out;
+    transition: var(--transition);
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-2;
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 4px;
   }
 }
