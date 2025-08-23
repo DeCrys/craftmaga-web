@@ -7,28 +7,7 @@ const DynmapSection = () => {
   // Nový stav pro uchování centra mapy (souřadnice)
   const [mapCenter, setMapCenter] = useState({ x: 0, y: 64, z: 0 });
 
-  const dynmapBaseUrl = "https://map.craftmaga.cz"; // URL Dynmap serveru, url v čiselné podobě
-
-  const mapFeatures = [     
-    {
-      icon: Eye,
-      title: "Real-time sledování",
-      description: "Sleduj pohyb hráčů v reálném čase",
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      icon: MapPin,
-      title: "Označené lokace",
-      description: "Najdi důležitá místa a města",
-      color: "from-green-500 to-emerald-500"
-    },
-    {
-      icon: Navigation,
-      title: "3D navigace",
-      description: "Plynulé přiblížení a pohyb po mapě",
-      color: "from-purple-500 to-pink-500"
-    }
-  ];
+  const dynmapBaseUrl = "https://map.craftmaga.cz"; // URL Dynmap serveru
 
   useEffect(() => {
     // Funkce pro načtení online hráčů
@@ -90,10 +69,10 @@ const DynmapSection = () => {
 
     fetchOnlinePlayers();
     
-    // Aktualizace každých 15 sekund (15000 ms)
+    // Aktualizace každých 15 sekund (5000 ms)
     const interval = setInterval(() => {
       fetchOnlinePlayers();
-    }, 15000);
+    }, 5000);
     
     return () => clearInterval(interval);
   }, [currentWorld]);

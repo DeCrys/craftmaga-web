@@ -8,7 +8,7 @@ const HeroSection = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [serverStats, setServerStats] = useState({
-    onlinePlayers: 0,
+    onlinePlayers: 0 as number | string,
     maxPlayers: 0,
     uptime: "0%"
   });
@@ -27,13 +27,19 @@ const HeroSection = () => {
             maxPlayers: data.players?.max || 0,
             uptime: "99.8%"
           });
+        } else {
+          setServerStats({
+            onlinePlayers: "Offline",
+            maxPlayers: 0,
+            uptime: "0%"
+          });
         }
       } catch (error) {
         console.error("Error fetching server stats:", error);
         setServerStats({
-          onlinePlayers: 0,
-          maxPlayers: 100,
-          uptime: "99.8%"
+          onlinePlayers: "Offline",
+          maxPlayers: 0,
+          uptime: "0%"
         });
       }
     };
@@ -95,16 +101,14 @@ const HeroSection = () => {
           {/* Server Stats */}
           <div className="flex flex-wrap justify-center gap-6 mb-12 animate-slide-in-up">
             <div className="card-glass text-center min-w-[120px]">
-              <div className="text-2xl font-bold gradient-text">{serverStats.onlinePlayers}</div>
+              <div className="text-2xl font-bold gradient-text">
+                {typeof serverStats.onlinePlayers === "number" ? serverStats.onlinePlayers : serverStats.onlinePlayers}
+              </div>
               <div className="text-sm text-foreground/60">Hráčů online</div>
             </div>
             <div className="card-glass text-center min-w-[120px]">
               <div className="text-2xl font-bold gradient-text">{serverStats.maxPlayers}</div>
               <div className="text-sm text-foreground/60">Max hráčů</div>
-            </div>
-            <div className="card-glass text-center min-w-[120px]">
-              <div className="text-2xl font-bold gradient-text">{serverStats.uptime}</div>
-              <div className="text-sm text-foreground/60">Uptime</div>
             </div>
           </div>
 
