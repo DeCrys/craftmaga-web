@@ -70,4 +70,4 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-app.listen(3001, () => console.log('Server běží na crafmaga-web-production.up.railway.app'));
+app.listen(3001, () => console.log('Server běží na https://crafmaga-web-production.up.railway.app'));
