@@ -3,7 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import GameModesSection from "@/components/GameModesSection";
 import TeamSection from "@/components/TeamSection";
 import VotingSection from "@/components/VotingSection";
-import ShopSection from "@/components/ShopSection"
+import ShopSection from "@/components/ShopSection";
 import DynmapSection from "@/components/DynmapSection";
 import Footer from "@/components/Footer";
 
@@ -14,11 +14,10 @@ const Index = () => {
       <main>
         <section id="domu">
           <HeroSection />
-        </section>
+        </section> {/* ← formulář vložen */}
         <GameModesSection />
         <TeamSection />
         <VotingSection />
-        <ShopSection />
         <DynmapSection />
       </main>
       <Footer />

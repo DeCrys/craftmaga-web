@@ -19,7 +19,6 @@ const Navigation = () => {
     { name: "Herní módy", link: "#mody" },
     { name: "Tým", link: "#tym" },
     { name: "Hlasování", link: "#hlasovani" },
-  //  { name: "Obchod", link: "#obchod" },
     { name: "Dynmap", link: "#dynmap" },
   ];
 
@@ -74,30 +73,32 @@ const Navigation = () => {
           isOpen={isMobileMenuOpen}
           onClose={() => setIsMobileMenuOpen(false)}
         >
-          {navItems.map((item, idx) => (
-            <a
-              key={`mobile-link-${idx}`}
-              href={item.link}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="relative text-white dark:text-neutral-300"
-            >
-              <span className="block">{item.name}</span>
-            </a>
-          ))}
-          <div className="flex w-full flex-col gap-4">
-            
+          <div className="flex flex-col gap-3 w-full bg-gradient-to-b from-neutral-900 to-neutral-800 rounded-2xl p-6 shadow-xl">
+            {navItems.map((item, idx) => (
+              <a
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full text-center px-4 py-3 text-white font-medium rounded-lg 
+                   hover:bg-neutral-700 hover:text-violet-400 transition-colors duration-200"
+              >
+                {item.name}
+              </a>
+            ))}
+
             <NavbarButton
               onClick={() => {
                 copyServerIP();
                 setIsMobileMenuOpen(false);
               }}
               variant="primary"
-              className="w-full"
+              className="w-full mt-2"
             >
               {copied ? "✅ Zkopírováno!" : "Připojit se"}
             </NavbarButton>
           </div>
         </MobileNavMenu>
+
       </MobileNav>
     </Navbar>
   );
