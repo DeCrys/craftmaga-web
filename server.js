@@ -11,7 +11,9 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+app.use(cors({
+    origin: 'https://craftmaga.cz'
+}));
 
 // ✨ Tady zadej IP adresu a port tvého Minecraft serveru
 const MINECRAFT_SERVER_IP = 'play.craftmaga.cz';
