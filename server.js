@@ -3,7 +3,7 @@ import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { status } from 'minecraft-server-util'; // ✨ Importujeme novou knihovnu
+import { status } from 'minecraft-server-util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -60,7 +60,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(404).json({ error: 'Hráč nenalezen' });
         }
 
-        const onlineStatus = await isPlayerOnline(nick); // ✨ Voláme novou funkci
+        const onlineStatus = await isPlayerOnline(nick);
         
         res.json({ online: onlineStatus.isOnline, onlinePlayers: onlineStatus.onlinePlayers, skinUrl: `https://crafatar.com/avatars/${uuid}?size=64&overlay`, uuid });
 
@@ -70,4 +70,5 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-app.listen(3001, () => console.log('Server běží na https://crafmaga-web-production.up.railway.app'));
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server běží na portu ${PORT}`));
