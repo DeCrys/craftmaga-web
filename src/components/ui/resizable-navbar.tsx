@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { IconMenu2, IconX, IconUserCircle } from "@tabler/icons-react";
+import { IconMenu2, IconX } from "@tabler/icons-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import React, { useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -32,10 +32,21 @@ export const Navbar = ({ children, className }: NavbarProps) => {
 
 export const NavBody = ({ children, className, visible }: NavBodyProps) => (
   <motion.div
-    animate={{ backdropFilter: visible ? "blur(10px)" : "none", boxShadow: visible ? "0 0 24px rgba(34,42,53,0.06),0 1px 1px rgba(0,0,0,0.05),0 0 0 1px rgba(34,42,53,0.04)" : "none", width: visible ? "50%" : "100%", y: visible ? 20 : 0 }}
+    animate={{
+      backdropFilter: visible ? "blur(10px)" : "none",
+      boxShadow: visible
+        ? "0 0 24px rgba(34,42,53,0.06),0 1px 1px rgba(0,0,0,0.05),0 0 0 1px rgba(34,42,53,0.04)"
+        : "none",
+      width: visible ? "50%" : "100%",
+      y: visible ? 20 : 0,
+    }}
     transition={{ type: "spring", stiffness: 200, damping: 50 }}
     style={{ minWidth: "800px" }}
-    className={cn("hidden lg:flex relative z-[60] mx-auto w-full max-w-7xl flex-row items-center justify-between rounded-full bg-transparent px-4 py-2 dark:bg-transparent", visible && "dark:bg-neutral-950/80", className)}
+    className={cn(
+      "hidden lg:flex relative z-[60] mx-auto w-full max-w-7xl flex-row items-center justify-between rounded-full bg-transparent px-4 py-2 dark:bg-transparent",
+      visible && "dark:bg-neutral-950/80",
+      className
+    )}
   >
     {children}
   </motion.div>
@@ -44,7 +55,12 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => (
 export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => (
   <div className={cn("hidden lg:flex space-x-4", className)}>
     {items.map((item, idx) => (
-      <a key={idx} href={item.link} onClick={onItemClick} className="px-4 py-2 text-white rounded hover:bg-neutral-700 transition">
+      <a
+        key={idx}
+        href={item.link}
+        onClick={onItemClick}
+        className="px-4 py-2 text-white rounded hover:bg-neutral-700 transition"
+      >
         {item.name}
       </a>
     ))}
@@ -52,32 +68,72 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => (
 );
 
 // === Mobilní navigace ===
-export const MobileNav = ({ children, className }: MobileNavProps) => <div className={cn("lg:hidden w-full relative", className)}>{children}</div>;
-export const MobileNavHeader = ({ children, className }: MobileNavHeaderProps) => <div className={cn("flex justify-between items-center px-4 py-2", className)}>{children}</div>;
+export const MobileNav = ({ children, className }: MobileNavProps) => (
+  <div className={cn("lg:hidden w-full relative", className)}>{children}</div>
+);
+export const MobileNavHeader = ({ children, className }: MobileNavHeaderProps) => (
+  <div className={cn("flex justify-between items-center px-4 py-2", className)}>{children}</div>
+);
 export const MobileNavMenu = ({ children, className, isOpen }: MobileNavMenuProps) => (
   <AnimatePresence>
     {isOpen && (
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className={cn("absolute top-full left-0 right-0 mt-2 mx-4 rounded-2xl bg-neutral-900 shadow-lg z-50", className)}>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        className={cn(
+          "absolute top-full left-0 right-0 mt-2 mx-4 rounded-2xl bg-neutral-900 shadow-lg z-50",
+          className
+        )}
+      >
         {children}
       </motion.div>
     )}
   </AnimatePresence>
 );
-export const MobileNavToggle = ({ isOpen, onClick }: { isOpen: boolean; onClick: () => void }) => isOpen ? <IconX className="text-white" onClick={onClick} /> : <IconMenu2 className="text-white" onClick={onClick} />;
+export const MobileNavToggle = ({
+  isOpen,
+  onClick,
+}: {
+  isOpen: boolean;
+  onClick: () => void;
+}) =>
+  isOpen ? (
+    <IconX className="text-white" onClick={onClick} />
+  ) : (
+    <IconMenu2 className="text-white" onClick={onClick} />
+  );
 
 // === Buttony ===
-export const NavbarButton = ({ children, onClick, className, variant = "primary" }: { children: React.ReactNode; onClick?: () => void; className?: string; variant?: "primary" | "secondary" | "dark" | "gradient"; }) => {
-  const baseStyles = "px-4 py-2 rounded-md bg-white button text-lg font-bold gradient-text text-black relative cursor-pointer hover:-translate-y-0.5 transition inline-block text-center";
+export const NavbarButton = ({
+  children,
+  onClick,
+  className,
+  variant = "primary",
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+  variant?: "primary" | "secondary" | "dark" | "gradient";
+}) => {
+  const baseStyles =
+    "px-4 py-2 rounded-md bg-white button text-lg font-bold gradient-text text-black relative cursor-pointer hover:-translate-y-0.5 transition inline-block text-center";
   const variantStyles = {
-    primary: "shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
+    primary:
+      "shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
     secondary: "bg-transparent shadow-none dark:text-white",
     dark: "bg-black text-white shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
-    gradient: "bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
+    gradient:
+      "bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
   };
-  return <button onClick={onClick} className={cn(baseStyles, variantStyles[variant], className)}>{children}</button>;
+  return (
+    <button onClick={onClick} className={cn(baseStyles, variantStyles[variant], className)}>
+      {children}
+    </button>
+  );
 };
 
-// === NavbarLogo s React Portal modal + propojení na tvůj Node server ===
+// === NavbarLogo s modal a loginem ===
 export const NavbarLogo = () => {
   const [showModal, setShowModal] = useState(false);
   const [nick, setNick] = useState<string | null>(null);
@@ -87,30 +143,39 @@ export const NavbarLogo = () => {
 
   const handleLogin = async () => {
     if (!inputNick) {
-      toast({ title: "Zadejte nick. 😕",
-      className: "w-full flex flex-col text-center",  
-      variant: "destructive" });
+      toast({
+        title: "Zadejte nick. 😕",
+        className: "w-full flex flex-col text-center",
+        variant: "destructive",
+      });
       return;
     }
-    
+
     try {
-      const res = await fetch("http://crafmaga-web-production.up.railway.app/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nick: inputNick }),
-      });
+      const res = await fetch(
+        "https://crafmaga-web-production.up.railway.app/api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nick: inputNick }),
+        }
+      );
       const data = await res.json();
 
       if (res.ok) {
         setNick(inputNick);
+        setSkinUrl(data.skinUrl || null);
         setShowModal(false);
         toast({
           title: "Úspěšně přihlášeno. ✅",
           variant: "default",
-          className: "w-full flex flex-col text-center" // Tato třída zarovná text na střed
+          className: "w-full flex flex-col text-center",
         });
       } else {
-        toast({ title: data.error || "Nepodařilo se přihlásit", variant: "destructive" });
+        toast({
+          title: data.error || "Nepodařilo se přihlásit",
+          variant: "destructive",
+        });
       }
     } catch (err) {
       toast({ title: "Chyba při připojení k serveru", variant: "destructive" });
@@ -119,12 +184,12 @@ export const NavbarLogo = () => {
 
   const handleLogout = () => {
     setNick(null);
-    setSkinUrl(null); // Vymažeme URL skinu po odhlášení
+    setSkinUrl(null);
     toast({
       title: "Úspěšně odhlášeno. 👋",
-      className: "w-full flex flex-col text-center" // Přidání třídy pro vycentrování
+      className: "w-full flex flex-col text-center",
     });
-   }
+  };
 
   return (
     <div className="relative z-20 flex items-center space-x-2 px-2 py-1">
@@ -150,7 +215,9 @@ export const NavbarLogo = () => {
         createPortal(
           <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
             <div className="bg-neutral-900 p-6 rounded-lg shadow-lg w-[90%] max-w-sm">
-              <h2 className="text-white text-xl font-bold mb-4">Zadejte svůj nick</h2>
+              <h2 className="text-white text-xl font-bold mb-4">
+                Zadejte svůj nick
+              </h2>
               <input
                 type="text"
                 placeholder="Nick"
