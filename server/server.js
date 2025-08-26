@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import cors from "cors";
+import fetch from "node-fetch"; // pokud ještě nemáš, nainstaluj: npm i node-fetch
+import { status } from "minecraft-server-util"; // pokud ještě nemáš: npm i minecraft-server-util
 
 const app = express();
 
@@ -10,90 +12,36 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Cesta k dist složce
+// Cesta k dist složce Vite
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Servírování buildu z Vite (dist/)
 app.use(express.static(path.join(__dirname, "dist")));
 
-// --- API endpoint příklad ---
-app.post("/api/login", (req, res) => {
-  const { username } = req.body;
-  if (!username) {
-    return res.status(400).json({ error: "Chybí uživatelské jméno" });
-  }
-  // tady by byla logika na ověření
-  res.json({ success: true, user: username });
-});
-
-// Pokud není žádný API route -> vrať index.html (kvůli React Routeru)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-
-// ✅ CORS opraven (https + bez lomítka na konci)
-app.use(
-  cors({
-    origin: "https://crafmaga-web-production.up.railway.app",
-  })
-);
-
-// Minecraft server info
-const MINECRAFT_SERVER_IP = "play.craftmaga.cz";
-const MINECRAFT_SERVER_PORT = 25048;
-
-// Získání UUID z Mojang API
-async function getUUID(nick) {
-  try {
-    const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${nick}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.id;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-}
-
-// Kontrola online statusu hráče
-async function isPlayerOnline(nick) {
-  try {
-    const response = await status(MINECRAFT_SERVER_IP, MINECRAFT_SERVER_PORT);
-
-    // Použij sample (novější verze vrací sample místo list)
-    const playerList = response.players.sample || [];
-    const isOnline = playerList.some(
-      (player) => player.name.toLowerCase() === nick.toLowerCase()
-    );
-
-    return {
-      isOnline,
-      onlinePlayers: response.players.online,
-      maxPlayers: response.players.max,
-    };
-  } catch (error) {
-    console.error("Chyba při komunikaci s Minecraft serverem:", error);
-    return { isOnline: false, onlinePlayers: 0, maxPlayers: 0 };
-  }
-}
-
-// Endpoint login
+// --- API endpoint login ---
 app.post("/api/login", async (req, res) => {
   const { nick } = req.body;
   if (!nick) return res.status(400).json({ error: "Musíš zadat nick" });
 
   try {
-    const uuid = await getUUID(nick);
-    if (!uuid) {
-      return res.status(404).json({ error: "Hráč nenalezen" });
-    }
+    // Získání UUID z Mojang API
+    const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${nick}`);
+    if (!uuidRes.ok) return res.status(404).json({ error: "Hráč nenalezen" });
+    const uuidData = await uuidRes.json();
+    const uuid = uuidData.id;
 
-    const onlineStatus = await isPlayerOnline(nick);
+    // Kontrola online statusu Minecraft serveru
+    const MINECRAFT_SERVER_IP = "play.craftmaga.cz";
+    const MINECRAFT_SERVER_PORT = 25048;
+    const response = await status(MINECRAFT_SERVER_IP, MINECRAFT_SERVER_PORT);
+    const playerList = response.players.sample || [];
+    const isOnline = playerList.some(
+      (player) => player.name.toLowerCase() === nick.toLowerCase()
+    );
 
     res.json({
-      online: onlineStatus.isOnline,
-      onlinePlayers: onlineStatus.onlinePlayers,
+      online: isOnline,
+      onlinePlayers: response.players.online,
+      maxPlayers: response.players.max,
       skinUrl: `https://crafatar.com/avatars/${uuid}?size=64&overlay`,
       uuid,
     });
@@ -103,5 +51,11 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// Pokud žádný API route, vrať index.html (pro React Router)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+// PORT z Railway env
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server běží na portu ${PORT}`));

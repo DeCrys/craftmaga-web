@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -133,13 +133,22 @@ export const NavbarButton = ({
   );
 };
 
-// === NavbarLogo s modal a loginem ===
+
 export const NavbarLogo = () => {
   const [showModal, setShowModal] = useState(false);
   const [nick, setNick] = useState<string | null>(null);
   const [skinUrl, setSkinUrl] = useState<string | null>(null);
   const [inputNick, setInputNick] = useState("");
   const { toast } = useToast();
+
+  // Načtení nicku při načtení stránky
+  useEffect(() => {
+    const savedNick = localStorage.getItem("minecraftNick");
+    if (savedNick) {
+      setNick(savedNick);
+      setSkinUrl(`https://cravatar.eu/helmavatar/${savedNick}/32.png`);
+    }
+  }, []);
 
   const handleLogin = async () => {
     if (!inputNick) {
@@ -153,18 +162,19 @@ export const NavbarLogo = () => {
 
     try {
       const res = await fetch(
-        "https://crafmaga-web-production.up.railway.app/api/login",
+        "https://crafmaga-web-production.up.railway.app/api/minecraft-login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nick: inputNick }),
+          body: JSON.stringify({ username: inputNick }),
         }
       );
-      const data = await res.json();
+      const data: { message?: string } = await res.json();
 
       if (res.ok) {
         setNick(inputNick);
-        setSkinUrl(data.skinUrl || null);
+        setSkinUrl(`https://cravatar.eu/helmavatar/${inputNick}/32.png`);
+        localStorage.setItem("minecraftNick", inputNick); // uložíme nick
         setShowModal(false);
         toast({
           title: "Úspěšně přihlášeno. ✅",
@@ -173,18 +183,22 @@ export const NavbarLogo = () => {
         });
       } else {
         toast({
-          title: data.error || "Nepodařilo se přihlásit",
+          title: data.message || "Nepodařilo se přihlásit",
           variant: "destructive",
         });
       }
     } catch (err) {
-      toast({ title: "Chyba při připojení k serveru", variant: "destructive" });
+      toast({
+        title: "Chyba při připojení k serveru",
+        variant: "destructive",
+      });
     }
   };
 
   const handleLogout = () => {
     setNick(null);
     setSkinUrl(null);
+    localStorage.removeItem("minecraftNick"); // smažeme nick při odhlášení
     toast({
       title: "Úspěšně odhlášeno. 👋",
       className: "w-full flex flex-col text-center",
@@ -197,7 +211,7 @@ export const NavbarLogo = () => {
         <div className="flex items-center gap-2">
           <img
             src={skinUrl || `https://cravatar.eu/helmavatar/${nick}/32.png`}
-            alt={nick}
+            alt={nick || ""}
             className="w-8 h-8 rounded-full"
           />
           <span className="text-white font-bold">{nick}</span>
