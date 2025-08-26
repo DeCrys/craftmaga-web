@@ -134,6 +134,7 @@ export const NavbarButton = ({
 };
 
 
+// === NavbarLogo s modal a loginem ===
 export const NavbarLogo = () => {
   const [showModal, setShowModal] = useState(false);
   const [nick, setNick] = useState<string | null>(null);
@@ -141,13 +142,12 @@ export const NavbarLogo = () => {
   const [inputNick, setInputNick] = useState("");
   const { toast } = useToast();
 
-  // Načtení nicku při načtení stránky
+  // Načtení nicku a skinUrl ze storage při startu
   useEffect(() => {
-    const savedNick = localStorage.getItem("minecraftNick");
-    if (savedNick) {
-      setNick(savedNick);
-      setSkinUrl(`https://cravatar.eu/helmavatar/${savedNick}/32.png`);
-    }
+    const storedNick = localStorage.getItem("nick");
+    const storedSkin = localStorage.getItem("skinUrl");
+    if (storedNick) setNick(storedNick);
+    if (storedSkin) setSkinUrl(storedSkin);
   }, []);
 
   const handleLogin = async () => {
@@ -162,19 +162,20 @@ export const NavbarLogo = () => {
 
     try {
       const res = await fetch(
-        "https://crafmaga-web-production.up.railway.app/api/minecraft-login",
+        "https://crafmaga-web-production.up.railway.app/api/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: inputNick }),
+          body: JSON.stringify({ nick: inputNick }),
         }
       );
-      const data: { message?: string } = await res.json();
+      const data = await res.json();
 
       if (res.ok) {
         setNick(inputNick);
-        setSkinUrl(`https://cravatar.eu/helmavatar/${inputNick}/32.png`);
-        localStorage.setItem("minecraftNick", inputNick); // uložíme nick
+        setSkinUrl(data.skinUrl || null);
+        localStorage.setItem("nick", inputNick);
+        localStorage.setItem("skinUrl", data.skinUrl || "");
         setShowModal(false);
         toast({
           title: "Úspěšně přihlášeno. ✅",
@@ -183,22 +184,20 @@ export const NavbarLogo = () => {
         });
       } else {
         toast({
-          title: data.message || "Nepodařilo se přihlásit",
+          title: data.error || "Nepodařilo se přihlásit",
           variant: "destructive",
         });
       }
     } catch (err) {
-      toast({
-        title: "Chyba při připojení k serveru",
-        variant: "destructive",
-      });
+      toast({ title: "Chyba při připojení k serveru", variant: "destructive" });
     }
   };
 
   const handleLogout = () => {
     setNick(null);
     setSkinUrl(null);
-    localStorage.removeItem("minecraftNick"); // smažeme nick při odhlášení
+    localStorage.removeItem("nick");
+    localStorage.removeItem("skinUrl");
     toast({
       title: "Úspěšně odhlášeno. 👋",
       className: "w-full flex flex-col text-center",
@@ -211,7 +210,7 @@ export const NavbarLogo = () => {
         <div className="flex items-center gap-2">
           <img
             src={skinUrl || `https://cravatar.eu/helmavatar/${nick}/32.png`}
-            alt={nick || ""}
+            alt={nick}
             className="w-8 h-8 rounded-full"
           />
           <span className="text-white font-bold">{nick}</span>
