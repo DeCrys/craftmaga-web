@@ -70,5 +70,9 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server běží na portu ${PORT}`));
+// node web server
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server nasloucha portu:: ${port}`);
+});
