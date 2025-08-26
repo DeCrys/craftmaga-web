@@ -94,7 +94,7 @@ export const NavbarLogo = () => {
     }
     
     try {
-      const res = await fetch("https://crafmaga-web-production.up.railway.app/api/login", {
+      const res = await fetch("http://crafmaga-web-production.up.railway.app/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nick: inputNick }),
@@ -172,6 +172,4 @@ export const NavbarLogo = () => {
         )}
     </div>
   );
-
 };
-
