@@ -162,7 +162,7 @@ export const NavbarLogo = () => {
 
     try {
       const res = await fetch(
-        "https://crafmaga-web-production.up.railway.app/api/login",
+        "https://server.craftmaga.cz.app/api/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
