@@ -37,7 +37,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => (
       boxShadow: visible
         ? "0 0 24px rgba(34,42,53,0.06),0 1px 1px rgba(0,0,0,0.05),0 0 0 1px rgba(34,42,53,0.04)"
         : "none",
-      width: visible ? "50%" : "100%",
+      width: visible ? "60%" : "100%",
       y: visible ? 20 : 0,
     }}
     transition={{ type: "spring", stiffness: 200, damping: 50 }}
@@ -59,7 +59,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => (
         key={idx}
         href={item.link}
         onClick={onItemClick}
-        className="px-4 py-2 text-white rounded hover:bg-neutral-700 transition"
+        className="px-4 py-2 text-white hover:gradient-text transition "
       >
         {item.name}
       </a>
@@ -149,48 +149,43 @@ export const NavbarLogo = () => {
     if (storedNick) setNick(storedNick);
     if (storedSkin) setSkinUrl(storedSkin);
   }, []);
-
-  const handleLogin = async () => {
-    if (!inputNick) {
+  
+  const handleLogin = () => {
+    if (inputNick.trim() === "") {
       toast({
-        title: "Zadejte nick. 😕",
-        className: "w-full flex flex-col text-center",
+        title: "Chyba",
+        description: "Nick nesmí být prázdný.",
         variant: "destructive",
+        className: "w-full flex flex-col text-center",
       });
       return;
     }
 
-    try {
-      const res = await fetch(
-        "https://server.craftmaga.cz.app/api/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nick: inputNick }),
-        }
-      );
-      const data = await res.json();
+    setNick(inputNick);
+    localStorage.setItem("nick", inputNick);
 
-      if (res.ok) {
-        setNick(inputNick);
-        setSkinUrl(data.skinUrl || null);
-        localStorage.setItem("nick", inputNick);
-        localStorage.setItem("skinUrl", data.skinUrl || "");
-        setShowModal(false);
-        toast({
-          title: "Úspěšně přihlášeno. ✅",
-          variant: "default",
-          className: "w-full flex flex-col text-center",
-        });
-      } else {
-        toast({
-          title: data.error || "Nepodařilo se přihlásit",
-          variant: "destructive",
-        });
-      }
-    } catch (err) {
-      toast({ title: "Chyba při připojení k serveru", variant: "destructive" });
-    }
+    // Generování URL skinu podle nicku
+    const generatedSkinUrl = `https://cravatar.eu/helmavatar/${inputNick}/32.png`;
+    setSkinUrl(generatedSkinUrl);
+    localStorage.setItem("skinUrl", generatedSkinUrl);
+
+    setShowModal(false);
+
+    // Toast s mini hlavičkou
+    toast({
+      description: (
+        <div className="flex items-center gap-2 justify-center">
+          <img
+            src={generatedSkinUrl}
+            alt={inputNick}
+            className="w-6 h-6 rounded-full"
+          />
+          <span>Přihlášen jako {inputNick} ✅</span>
+        </div>
+      ),
+      variant: "default",
+      className: "w-full flex flex-col text-center",
+    });
   };
 
   const handleLogout = () => {
@@ -200,6 +195,7 @@ export const NavbarLogo = () => {
     localStorage.removeItem("skinUrl");
     toast({
       title: "Úspěšně odhlášeno. 👋",
+      variant: "default",
       className: "w-full flex flex-col text-center",
     });
   };

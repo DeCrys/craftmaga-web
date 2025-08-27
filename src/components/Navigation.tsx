@@ -15,8 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 
 const Navigation = () => {
   const navItems = [
-    { name: "Domů", link: "#domu" },
-    { name: "Herní módy", link: "#mody" },
+    { name: "Domů", link: "#domu"  },
+    { name: "Herní módy", link: "#mody", },
     { name: "Tým", link: "#tym" },
     { name: "Hlasování", link: "#hlasovani" },
     { name: "Dynmap", link: "#dynmap" },

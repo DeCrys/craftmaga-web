@@ -253,3 +253,7 @@
     transform: scale(1);
   }
 }
+
+.endora-panel {
+    display: none !important;
+}
