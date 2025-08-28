@@ -93,7 +93,7 @@ app.get("/api/minebook/:id", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`API server běží na http://localhost:${PORT}`);
+  console.log(`API server běží na https://crafmaga-web-production.up.railway.app:${PORT}`);
 });
 // Poznámka: Nezapomeň nainstalovat závislosti pomocí:
 // npm install express node-fetch cors
