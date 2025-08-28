@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import cors from "cors";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
@@ -61,6 +61,7 @@ app.get("/api/minecraftlist/:token", async (req, res) => {
       headers: { Authorization: req.params.token }
     });
     const votesData = await rVotes.json();
+    // Vrací pole, nejnovější je na konci, je potřeba vzít poslední
     const lastVoteObj = votesData.votes?.length ? votesData.votes[votesData.votes.length - 1] : null;
 
     res.json({
@@ -93,7 +94,5 @@ app.get("/api/minebook/:id", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`API server běží na https://crafmaga-web-production.up.railway.app:${PORT}`);
+  console.log(`API server běží na portu ${PORT}`);
 });
-// Poznámka: Nezapomeň nainstalovat závislosti pomocí:
-// npm install express node-fetch cors

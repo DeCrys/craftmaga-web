@@ -90,16 +90,16 @@ const VotingSection = () => {
       let data: any = null;
 
       if (site.type === "czech-craft" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app:3000/api/czech-craft/${site.slug}`);
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/czech-craft/${site.slug}`);
         data = await res.json();
       } else if (site.type === "craftlist" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app:3000/api/craftlist/${site.slug}`);
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/craftlist/${site.slug}`);
         data = await res.json();
       } else if (site.type === "minecraftlist" && site.token) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app:3000/api/minecraftlist/${site.token}`);
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraftlist/${site.token}`);
         data = await res.json();
       } else if (site.type === "serverlist" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app:3000/api/minebook/${site.slug}`);
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minebook/${site.slug}`);
         data = await res.json();
       }
 
