@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Vote, Gift, Star, ExternalLink, Trophy } from "lucide-react";
+import { Vote, Gift, Star, ExternalLink, Trophy, LucideIcon } from "lucide-react";
+
+// Drobné vylepšení: ikony pro různé typy informací
+const InfoIcon: Record<string, LucideIcon> = {
+  votes: Vote,
+  position: Trophy,
+  lastVoter: Star,
+};
 
 type SiteType =
   | "czech-craft"
@@ -18,8 +25,8 @@ type VotingSite = {
   votes?: number | null;
   icon: string;
   type: SiteType;
-  slug?: string;      // pro Czech-Craft a Minebook
-  token?: string;     // pro MinecraftServery.eu
+  slug?: string;
+  token?: string;
   lastVoter?: string | null;
   lastVoterSkin?: string | null;
 };
@@ -59,11 +66,11 @@ const VotingSection = () => {
       {
         id: "minebook",
         name: "Minebook",
-        url: "https://minebook.eu/server/221",
+        url: "https://minebook.eu/server/222",
         reward: "50 coinů + Bonus",
         icon: "https://minebook.eu/images/icons/favicon.ico",
         type: "serverlist",
-        slug: "221",
+        slug: "222",
       },
     ],
     []
@@ -72,7 +79,6 @@ const VotingSection = () => {
   const [votingSites, setVotingSites] = useState<VotingSite[]>(initialSites);
   const [loadingIds, setLoadingIds] = useState<Record<string, boolean>>({});
 
-  // načtení posledních hlasujících z localStorage
   useEffect(() => {
     setVotingSites((prev) =>
       prev.map((site) => {
@@ -103,7 +109,6 @@ const VotingSection = () => {
         data = await res.json();
       }
 
-      // aktualizace posledního hlasujícího, pokud je dostupný
       if (data?.lastVoter) {
         const skin = `https://minotar.net/helm/${data.lastVoter}/32`;
         localStorage.setItem(`lastVoter-${site.id}`, data.lastVoter);
@@ -138,7 +143,7 @@ const VotingSection = () => {
         loadSiteLiveData(site);
       }
     });
-  }, []);
+  }, [initialSites]);
 
   const rewards = [
     { icon: Gift, title: "Denní Odměny", description: "Hlasuj každý den a získej bonus odměny", color: "from-purple-500 to-pink-500" },
@@ -164,11 +169,9 @@ const VotingSection = () => {
             <Vote className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium">Hlasování</span>
           </div>
-
           <h2 className="text-4xl md:text-6xl font-black mb-6">
             <span className="gradient-text">Podpoř Server</span>
           </h2>
-
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
             Hlasuj pro náš server a získej úžasné odměny. Tvoje podpora nám pomáhá růst!
           </p>
@@ -207,47 +210,62 @@ const VotingSection = () => {
               return (
                 <div
                   key={site.id}
-                  className="card-glass group relative overflow-hidden cursor-pointer"
+                  className="card-glass group relative overflow-hidden cursor-pointer p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:scale-[1.02]"
                   onClick={() => openVotingLink(site)}
                   style={{ animationDelay: `${index * 0.1}s`, animation: "slide-in-up 0.6s ease-out both" }}
                 >
-                  <div className="absolute top-4 right-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                      site.position && site.position <= 3 ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white" : "glass"
-                    }`}>
-                      {site.position ? `#${site.position}` : "—"}
+                  {/* Horní část: Ikona, Název, Externí odkaz, Pozice */}
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-4">
+                      <img src={site.icon} alt={site.name} className="w-12 h-12 rounded-lg shadow-md" />
+                      <div>
+                        <h4 className="text-xl font-bold text-white group-hover:text-primary transition-colors --gradient-secondary">{site.name}</h4>
+                        <p className="text-sm gradient-text font-semibold">{site.reward}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <ExternalLink className="w-5 h-5 text-foreground/50 group-hover:text-primary-light transition-colors duration-200" />
+                      {site.position && (
+                        <div className={`px-3 py-1 rounded-full text-xs font-bold ${site.position && site.position <= 3 ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white" : "glass-secondary"}`}>
+                          Pozice #{site.position}
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <img src={site.icon} alt={site.name} className="w-10 h-10 rounded-md" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-bold group-hover:text-primary transition-colors">{site.name}</h4>
-                        <ExternalLink className="w-4 h-4 text-foreground/40" />
+                  {/* Spodní část: Hlasy a Poslední hlasující */}
+                  <div className="border-t border-gray-700/50 pt-4 mt-4 flex flex-col items-center">
+                    <div className="flex items-center gap-2 text-sm text-foreground/70 mb-2">
+                      <div className="flex items-center gap-2">
+                        <InfoIcon.votes className="w-4 h-4 text-primary-light" />
+                        <span>Hlasy:</span>
                       </div>
-                      <p className="text-sm text-primary font-semibold mb-1">{site.reward}</p>
-                      <div className="flex items-center gap-4 text-xs text-foreground/60">
-                        <span>
-                          {typeof site.votes === "number"
-                            ? `${numberFmt.format(site.votes)} hlasů`
-                            : isLoading
-                            ? "Načítám…"
-                            : supported
-                            ? "—"
-                            : "N/A"}
-                        </span>
-
-                        {site.lastVoter && (
-                          <div className="flex items-center gap-2">
-                            <img src={site.lastVoterSkin!} alt={site.lastVoter} className="w-6 h-6 rounded-full" />
-                            <span className="text-xs">{site.lastVoter}</span>
-                          </div>
-                        )}
-                      </div>
+                      <span className="font-semibold text-white">
+                        {typeof site.votes === "number"
+                          ? numberFmt.format(site.votes)
+                          : isLoading
+                          ? "Načítám…"
+                          : supported
+                          ? "—"
+                          : "N/A"}
+                      </span>
                     </div>
+
+                    {site.lastVoter && (
+                      <div className="flex items-center gap-2 text-sm text-foreground/70">
+                        <div className="flex items-center gap-2">
+                          <InfoIcon.lastVoter className="w-4 h-4 text-yellow-400" />
+                          <span>Poslední hlasující:</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <img src={site.lastVoterSkin!} alt={site.lastVoter} className="w-6 h-6 rounded-full border border-gray-600 shadow-sm" />
+                          <span className="font-semibold text-white">{site.lastVoter}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
+                  {/* Překrytí pro hover efekt */}
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[var(--radius-lg)] pointer-events-none"></div>
                 </div>
               );
