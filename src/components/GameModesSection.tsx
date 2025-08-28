@@ -4,8 +4,8 @@ import { Sword, Castle, Zap, Crown, Shield, Gamepad2 } from 'lucide-react'
 import { useEffect, useState } from "react"
 
 const GameModesSection = () => {
-  const dynmapBaseUrl = "http://54.36.113.186:25417"
-  const corsProxy = "https://api.allorigins.win/raw?url="
+  const dynmapBaseUrl = "http://135.181.49.221:25326" // URL Dynmap serveru
+  const corsProxy = "https://api.allorigins.win/raw?url="  // CORS proxy pro obcházení CORS omezení
 
   const initialGameModes = [
     {

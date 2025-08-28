@@ -14,7 +14,7 @@ const DynmapSection = () => {
     const fetchOnlinePlayers = async () => {
       try {
         const corsProxy = 'https://api.allorigins.win/raw?url=';   
-        const dynmapUrl = `http://54.36.113.186:25417/up/world/${currentWorld}/`; // URL Dynmap API pro aktuální svět, url v čiselné podobě
+        const dynmapUrl = `http://135.181.49.221:25326/up/world/${currentWorld}/`; // URL Dynmap API pro aktuální svět, url v čiselné podobě
         console.log("Volám Dynmap API:", dynmapUrl);
         
         try {
@@ -41,8 +41,8 @@ const DynmapSection = () => {
           console.log('Přecházím na fallback API.');
         }
   
-        // Fallback na de-fra1.altare.cv:25048 API
-        const server = 'de-fra1.altare.cv:25048';  
+        // Fallback na fi-hel2.altare.cv:25326 API
+        const server = 'fi-hel2.altare.cv:25326';  
         if (!server) {
           console.error('Server není definován');
           return;
