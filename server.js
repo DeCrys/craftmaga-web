@@ -1,74 +1,99 @@
-import express from 'express';
-import path from 'path';
-import cors from 'cors';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { status } from 'minecraft-server-util'; // ✨ Importujeme novou knihovnu
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import express from "express";
+import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+const PORT = 3000;
+
 app.use(cors());
 
-// ✨ Tady zadej IP adresu a port tvého Minecraft serveru
-const MINECRAFT_SERVER_IP = 'play.craftmaga.cz';
-const MINECRAFT_SERVER_PORT = 25565; // Standardní port pro Minecraft
+// Czech-Craft (bez klíče)
+app.get("/api/czech-craft/:slug", async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const r = await fetch(`https://czech-craft.eu/api/server/${slug}`);
+    const data = await r.json();
 
-// Funkce pro získání UUID hráče
-async function getUUID(nick) {
-    try {
-        const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${nick}`);
-        if (!res.ok) return null;
-        const data = await res.json();
-        return data.id;
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
-}
+    const lastVote = data?.data?.[0]; // poslední hlasující
+    const lastVoter = lastVote?.username ?? null;
 
-// ✨ Nová funkce, která kontroluje online status hráče
-async function isPlayerOnline(nick) {
-    try {
-        // Požádáme Minecraft server o jeho status a seznam hráčů
-        const response = await status(MINECRAFT_SERVER_IP, MINECRAFT_SERVER_PORT);
-        
-        // Zkontrolujeme, jestli je hráč online
-        const onlinePlayers = response.players.online;
-        const maxPlayers = response.players.max;
-        const isOnline = response.players.list?.some(player => player.name.toLowerCase() === nick.toLowerCase());
-        
-        return { isOnline, onlinePlayers, maxPlayers };
-
-    } catch (error) {
-        console.error('Chyba při komunikaci s Minecraft serverem:', error);
-        return { isOnline: false, onlinePlayers: 0, maxPlayers: 0 };
-    }
-}
-
-// Endpoint pro přihlášení
-app.post('/api/login', async (req, res) => {
-    const { nick } = req.body;
-    if (!nick) return res.status(400).json({ error: 'Musíš zadat nick' });
-
-    try {
-        const uuid = await getUUID(nick);
-        if (!uuid) {
-            return res.status(404).json({ error: 'Hráč nenalezen' });
-        }
-
-        const onlineStatus = await isPlayerOnline(nick); // ✨ Voláme novou funkci
-        
-        res.json({ online: onlineStatus.isOnline, onlinePlayers: onlineStatus.onlinePlayers, skinUrl: `https://crafatar.com/avatars/${uuid}?size=64&overlay`, uuid });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Chyba při získávání dat o hráči' });
-    }
+    res.json({
+      votes: data?.votes_count ?? null,
+      position: data?.position ?? null,
+      lastVoter,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Chyba Czech-Craft API" });
+  }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server běží na portu ${PORT}`));
+// Craftlist (s API tokenem)
+app.get("/api/craftlist/:slug", async (req, res) => {
+  const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
+  try {
+    const r = await fetch(`https://api.craftlist.org/server/${req.params.slug}?token=${token}`);
+    const data = await r.json();
+
+    const lastVote = data?.votes?.[0];
+    const lastVoter = lastVote?.username ?? null;
+
+    res.json({
+      votes: data?.votes_count ?? data?.votes ?? null,
+      position: data?.position ?? null,
+      lastVoter,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Chyba Craftlist API" });
+  }
+});
+
+// MinecraftServery.eu
+app.get("/api/minecraftlist/:token", async (req, res) => {
+  try {
+    // Info serveru
+    const rInfo = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/info`, {
+      headers: { Authorization: req.params.token }
+    });
+    const infoData = await rInfo.json();
+
+    // Hlasy
+    const rVotes = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/votes`, {
+      headers: { Authorization: req.params.token }
+    });
+    const votesData = await rVotes.json();
+    const lastVoteObj = votesData.votes?.length ? votesData.votes[votesData.votes.length - 1] : null;
+
+    res.json({
+      votes: infoData.position?.votes ?? null,
+      position: infoData.position?.rating ?? null,
+      lastVoter: lastVoteObj?.nickname ?? null
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Chyba MinecraftServery API" });
+  }
+});
+
+// Minebook (bez klíče)
+app.get("/api/minebook/:id", async (req, res) => {
+  try {
+    const r = await fetch(`https://minebook.eu/api/server/${req.params.id}`);
+    const data = await r.json();
+
+    const lastVote = data?.votes?.[0];
+    const lastVoter = lastVote?.username ?? null;
+
+    res.json({
+      votes: data?.votes ?? null,
+      position: data?.position ?? null,
+      lastVoter,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Chyba Minebook API" });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`API server běží na http://localhost:${PORT}`);
+});
+// Poznámka: Nezapomeň nainstalovat závislosti pomocí:
+// npm install express node-fetch cors

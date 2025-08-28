@@ -7,8 +7,7 @@ type SiteType =
   | "czech-craft"
   | "craftlist"
   | "minecraftlist"
-  | "serverlist"
-  | "topcraft-cz";
+  | "serverlist";
 
 type VotingSite = {
   id: string;
@@ -17,9 +16,10 @@ type VotingSite = {
   reward: string;
   position?: number | null;
   votes?: number | null;
-  icon: string; // URL na favicon
+  icon: string;
   type: SiteType;
-  slug?: string; // Czech-Craft: server slug
+  slug?: string;      // pro Czech-Craft a Minebook
+  token?: string;     // pro MinecraftServery.eu
   lastVoter?: string | null;
   lastVoterSkin?: string | null;
 };
@@ -34,8 +34,6 @@ const VotingSection = () => {
         name: "Czech-Craft",
         url: "https://czech-craft.eu/server/crafmaga",
         reward: "100 coinů + Klíč",
-        position: undefined,
-        votes: undefined,
         icon: "https://czech-craft.eu/static/icons/favicon.png",
         type: "czech-craft",
         slug: "crafmaga",
@@ -45,30 +43,27 @@ const VotingSection = () => {
         name: "Craftlist",
         url: "https://craftlist.org/craftmaga#vote",
         reward: "Bonus za hlas",
-        position: undefined,
-        votes: undefined,
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
+        slug: "crafmaga",
       },
       {
         id: "minecraftlist",
         name: "MinecraftServery.eu",
         url: "https://minecraftservery.eu/server/craftmaga/vote",
         reward: "75 coinů + XP Boost",
-        position: undefined,
-        votes: undefined,
         icon: "https://minecraftservery.eu/favicon.ico",
         type: "minecraftlist",
+        token: "XdpEvrYRpy39slJQ",
       },
       {
         id: "minebook",
         name: "Minebook",
         url: "https://minebook.eu/server/221",
         reward: "50 coinů + Bonus",
-        position: undefined,
-        votes: undefined,
         icon: "https://minebook.eu/images/icons/favicon.ico",
         type: "serverlist",
+        slug: "221",
       },
     ],
     []
@@ -77,17 +72,13 @@ const VotingSection = () => {
   const [votingSites, setVotingSites] = useState<VotingSite[]>(initialSites);
   const [loadingIds, setLoadingIds] = useState<Record<string, boolean>>({});
 
-  // Načtení posledních hlasujících z localStorage
+  // načtení posledních hlasujících z localStorage
   useEffect(() => {
     setVotingSites((prev) =>
       prev.map((site) => {
         const storedVoter = localStorage.getItem(`lastVoter-${site.id}`);
         const storedSkin = localStorage.getItem(`lastVoterSkin-${site.id}`);
-        return {
-          ...site,
-          lastVoter: storedVoter || null,
-          lastVoterSkin: storedSkin || null,
-        };
+        return { ...site, lastVoter: storedVoter || null, lastVoterSkin: storedSkin || null };
       })
     );
   }, []);
@@ -96,42 +87,29 @@ const VotingSection = () => {
     try {
       setLoadingIds((s) => ({ ...s, [site.id]: true }));
 
-      // Fetch pro každou stránku zvlášť
       let data: any = null;
 
       if (site.type === "czech-craft" && site.slug) {
-        const res = await fetch(`https://czech-craft.eu/api/server/${site.slug}/votes/`, { cache: "no-store" });
+        const res = await fetch(`http://localhost:3001/api/czech-craft/${site.slug}`);
         data = await res.json();
-        const lastVote = data?.data?.[0];
-        if (lastVote?.username) {
-          const skin = `https://minotar.net/helm/${lastVote.username}/32`;
-          localStorage.setItem(`lastVoter-${site.id}`, lastVote.username);
-          localStorage.setItem(`lastVoterSkin-${site.id}`, skin);
-          site.lastVoter = lastVote.username;
-          site.lastVoterSkin = skin;
-        }
-      } else if (site.type === "craftlist") {
-        const res = await fetch(`https://api.craftlist.org/server/crafmaga?token=hdlnzauscxe4xidt7sph`, { cache: "no-store" });
+      } else if (site.type === "craftlist" && site.slug) {
+        const res = await fetch(`http://localhost:3001/api/craftlist/${site.slug}`);
         data = await res.json();
-        const lastVote = data?.votes?.[0];
-        if (lastVote?.username) {
-          const skin = `https://minotar.net/helm/${lastVote.username}/32`;
-          localStorage.setItem(`lastVoter-${site.id}`, lastVote.username);
-          localStorage.setItem(`lastVoterSkin-${site.id}`, skin);
-          site.lastVoter = lastVote.username;
-          site.lastVoterSkin = skin;
-        }
-      } else if (site.type === "minecraftlist") {
-        const res = await fetch(`https://minecraftservery.eu/api/server/craftmaga?key=XdpEvrYRpy39slJQ`, { cache: "no-store" });
+      } else if (site.type === "minecraftlist" && site.token) {
+        const res = await fetch(`http://localhost:3001/api/minecraftlist/${site.token}`);
         data = await res.json();
-        const lastVote = data?.votes?.[0];
-        if (lastVote?.username) {
-          const skin = `https://minotar.net/helm/${lastVote.username}/32`;
-          localStorage.setItem(`lastVoter-${site.id}`, lastVote.username);
-          localStorage.setItem(`lastVoterSkin-${site.id}`, skin);
-          site.lastVoter = lastVote.username;
-          site.lastVoterSkin = skin;
-        }
+      } else if (site.type === "serverlist" && site.slug) {
+        const res = await fetch(`http://localhost:3001/api/minebook/${site.slug}`);
+        data = await res.json();
+      }
+
+      // aktualizace posledního hlasujícího, pokud je dostupný
+      if (data?.lastVoter) {
+        const skin = `https://minotar.net/helm/${data.lastVoter}/32`;
+        localStorage.setItem(`lastVoter-${site.id}`, data.lastVoter);
+        localStorage.setItem(`lastVoterSkin-${site.id}`, skin);
+        site.lastVoter = data.lastVoter;
+        site.lastVoterSkin = skin;
       }
 
       setVotingSites((prev) =>
@@ -147,8 +125,8 @@ const VotingSection = () => {
             : s
         )
       );
-    } catch {
-      // necháme ticho
+    } catch (err) {
+      console.error(`Chyba při načítání dat pro ${site.name}:`, err);
     } finally {
       setLoadingIds((s) => ({ ...s, [site.id]: false }));
     }
@@ -156,32 +134,16 @@ const VotingSection = () => {
 
   useEffect(() => {
     initialSites.forEach((site) => {
-      if (site.type === "czech-craft" || site.type === "craftlist" || site.type === "minecraftlist") {
+      if (["czech-craft", "craftlist", "minecraftlist", "serverlist"].includes(site.type)) {
         loadSiteLiveData(site);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const rewards = [
-    {
-      icon: Gift,
-      title: "Denní Odměny",
-      description: "Hlasuj každý den a získej bonus odměny",
-      color: "from-purple-500 to-pink-500",
-    },
-    {
-      icon: Star,
-      title: "VIP Přístup",
-      description: "Speciální funkce pro aktivní voliče",
-      color: "from-yellow-500 to-orange-500",
-    },
-    {
-      icon: Trophy,
-      title: "Měsíční Soutěž",
-      description: "Nejaktivnější voliči vyhrávají ceny",
-      color: "from-green-500 to-emerald-500",
-    },
+    { icon: Gift, title: "Denní Odměny", description: "Hlasuj každý den a získej bonus odměny", color: "from-purple-500 to-pink-500" },
+    { icon: Star, title: "VIP Přístup", description: "Speciální funkce pro aktivní voliče", color: "from-yellow-500 to-orange-500" },
+    { icon: Trophy, title: "Měsíční Soutěž", description: "Nejaktivnější voliči vyhrávají ceny", color: "from-green-500 to-emerald-500" },
   ];
 
   const openVotingLink = (site: VotingSite) => {
@@ -219,25 +181,15 @@ const VotingSection = () => {
               <div
                 key={reward.title}
                 className="card-glass text-center group"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  animation: "fade-in-scale 0.6s ease-out both",
-                }}
+                style={{ animationDelay: `${index * 0.1}s`, animation: "fade-in-scale 0.6s ease-out both" }}
               >
                 <div className="relative mb-4">
-                  <div
-                    className={`w-12 h-12 rounded-xl bg-gradient-to-br ${reward.color} p-3 mx-auto group-hover:scale-110 transition-transform duration-300`}
-                  >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${reward.color} p-3 mx-auto group-hover:scale-110 transition-transform duration-300`}>
                     <IconComponent className="w-full h-full text-white" />
                   </div>
-                  <div
-                    className={`absolute inset-0 w-12 h-12 rounded-xl bg-gradient-to-br ${reward.color} blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 mx-auto`}
-                  ></div>
+                  <div className={`absolute inset-0 w-12 h-12 rounded-xl bg-gradient-to-br ${reward.color} blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 mx-auto`}></div>
                 </div>
-
-                <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
-                  {reward.title}
-                </h3>
+                <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">{reward.title}</h3>
                 <p className="text-sm text-foreground/70">{reward.description}</p>
               </div>
             );
@@ -245,59 +197,36 @@ const VotingSection = () => {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-center mb-8 gradient-text">
-            Hlasovací weby
-          </h3>
+          <h3 className="text-2xl font-bold text-center mb-8 gradient-text">Hlasovací weby</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {votingSites.map((site, index) => {
               const isLoading = !!loadingIds[site.id];
-              const supported =
-                site.type === "czech-craft" ||
-                site.type === "craftlist" ||
-                site.type === "minecraftlist";
+              const supported = ["czech-craft", "craftlist", "minecraftlist", "serverlist"].includes(site.type);
 
               return (
                 <div
                   key={site.id}
                   className="card-glass group relative overflow-hidden cursor-pointer"
                   onClick={() => openVotingLink(site)}
-                  style={{
-                    animationDelay: `${index * 0.1}s`,
-                    animation: "slide-in-up 0.6s ease-out both",
-                  }}
+                  style={{ animationDelay: `${index * 0.1}s`, animation: "slide-in-up 0.6s ease-out both" }}
                 >
                   <div className="absolute top-4 right-4">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                        site.position && site.position <= 3
-                          ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white"
-                          : "glass"
-                      }`}
-                    >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                      site.position && site.position <= 3 ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white" : "glass"
+                    }`}>
                       {site.position ? `#${site.position}` : "—"}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <img
-                      src={site.icon}
-                      alt={site.name}
-                      className="w-10 h-10 rounded-md"
-                    />
-
+                    <img src={site.icon} alt={site.name} className="w-10 h-10 rounded-md" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-bold group-hover:text-primary transition-colors">
-                          {site.name}
-                        </h4>
+                        <h4 className="font-bold group-hover:text-primary transition-colors">{site.name}</h4>
                         <ExternalLink className="w-4 h-4 text-foreground/40" />
                       </div>
-
-                      <p className="text-sm text-primary font-semibold mb-1">
-                        {site.reward}
-                      </p>
-
+                      <p className="text-sm text-primary font-semibold mb-1">{site.reward}</p>
                       <div className="flex items-center gap-4 text-xs text-foreground/60">
                         <span>
                           {typeof site.votes === "number"
@@ -311,11 +240,7 @@ const VotingSection = () => {
 
                         {site.lastVoter && (
                           <div className="flex items-center gap-2">
-                            <img
-                              src={site.lastVoterSkin!}
-                              alt={site.lastVoter}
-                              className="w-6 h-6 rounded-full"
-                            />
+                            <img src={site.lastVoterSkin!} alt={site.lastVoter} className="w-6 h-6 rounded-full" />
                             <span className="text-xs">{site.lastVoter}</span>
                           </div>
                         )}
