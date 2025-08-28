@@ -7,7 +7,7 @@ const DynmapSection = () => {
   // Nový stav pro uchování centra mapy (souřadnice)
   const [mapCenter, setMapCenter] = useState({ x: 0, y: 64, z: 0 });
 
-  const dynmapBaseUrl = "https://map.craftmaga.cz"; // URL Dynmap serveru
+  const dynmapBaseUrl = "https://dynmap.up.railway.app"; // URL Dynmap serveru
 
   useEffect(() => {
     // Funkce pro načtení online hráčů
