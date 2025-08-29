@@ -53,7 +53,7 @@ const VotingSection = () => {
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
         slug: "craftmaga",
-        token: "hdlnzauscxe4xidt7sph"
+        token: "hdlnzauscxe4xidt7sph",
       },
       {
         id: "minecraftlist",
@@ -106,10 +106,11 @@ const VotingSection = () => {
       } else if (site.type === "minecraftlist" && site.token) {
         const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraftlist/${site.token}`);
         data = await res.json();
-      } else if (site.type === "serverlist" && site.token) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraft-list/${site.token}`);
+      } else if (site.type === "serverlist" && site.slug) {
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraft-list/${site.slug}`);
         data = await res.json();
       }
+
 
       if (data?.lastVoter) {
         const skin = `https://minotar.net/helm/${data.lastVoter}/32`;
@@ -123,12 +124,12 @@ const VotingSection = () => {
         prev.map((s) =>
           s.id === site.id
             ? {
-                ...s,
-                position: typeof data?.position === "number" ? data.position : s.position ?? null,
-                votes: typeof data?.votes === "number" ? data.votes : s.votes ?? null,
-                lastVoter: site.lastVoter || s.lastVoter,
-                lastVoterSkin: site.lastVoterSkin || s.lastVoterSkin,
-              }
+              ...s,
+              position: typeof data?.position === "number" ? data.position : s.position ?? null,
+              votes: typeof data?.votes === "number" ? data.votes : s.votes ?? null,
+              lastVoter: site.lastVoter || s.lastVoter,
+              lastVoterSkin: site.lastVoterSkin || s.lastVoterSkin,
+            }
             : s
         )
       );
@@ -246,10 +247,10 @@ const VotingSection = () => {
                         {typeof site.votes === "number"
                           ? numberFmt.format(site.votes)
                           : isLoading
-                          ? "Načítám…"
-                          : supported
-                          ? "—"
-                          : "N/A"}
+                            ? "Načítám…"
+                            : supported
+                              ? "—"
+                              : "N/A"}
                       </span>
                     </div>
 
