@@ -53,6 +53,7 @@ const VotingSection = () => {
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
         slug: "craftmaga",
+        token: "hdlnzauscxe4xidt7sph",
       },
       {
         id: "minecraftlist",
@@ -61,6 +62,7 @@ const VotingSection = () => {
         reward: "75 coinů + XP Boost",
         icon: "https://minecraftservery.eu/favicon.ico",
         type: "minecraftlist",
+        token: "XdpEvrYRpy39slJQ",
       },
       {
         id: "minecraft-list",
@@ -70,6 +72,7 @@ const VotingSection = () => {
         icon: "https://www.minecraft-list.cz/assets/images/logo.svg?id=52de4764faffcb65049f",
         type: "serverlist",
         slug: "crafmaga",
+        token: "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9",
       },
     ],
     []

@@ -1,19 +1,11 @@
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
-import dotenv from "dotenv";
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-
-const tokens = {
-  "craftlist": process.env.CRAFTLIST_API_TOKEN,
-  "minecraftlist": process.env.MINECRAFTSERVERY_API_TOKEN,
-  "serverlist": process.env.MINECRAFT_LIST_API_TOKEN,
-};
 
 // Czech-Craft (funkční) 
 app.get("/api/czech-craft/:slug", async (req, res) => {
