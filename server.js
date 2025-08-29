@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// Czech-Craft (bez klíče)
+// Czech-Craft (funkční) 
 app.get("/api/czech-craft/:slug", async (req, res) => {
   const { slug } = req.params;
 
@@ -35,35 +35,29 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
   }
 });
 
-// Craftlist (bez klíče)
+// Craftlist 
 app.get("/api/craftlist/:slug", async (req, res) => {
   const { slug } = req.params;
+  const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
 
   try {
-    // 1. Získání základních informací o serveru (pro pozici)
-    const serverInfoRes = await fetch(`https://craftlist.org/api/server/${slug}/`);
-    const serverInfoData = await serverInfoRes.json();
+    const r = await fetch(`https://craftlist.org/api/server/${slug}/?token=${token}`);
+    const data = await r.json();
 
-    // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
-    const votesListRes = await fetch(`https://craftlist.org/api/server/${slug}/votes/`);
-    const votesListData = await votesListRes.json();
-
-    // Zpracování dat z obou API volání
-    const lastVoter = votesListData?.data?.[0]?.username ?? null; // Získáme username prvního prvku v poli `data`
+    const lastVoter = data?.lastVote?.username ?? null;
 
     res.json({
-      votes: votesListData?.vote_count ?? null, // Správný název klíče je `vote_count`
-      position: serverInfoData?.position ?? null,
+      votes: data?.votes_count ?? null,
+      position: data?.position ?? null,
       lastVoter,
     });
-
   } catch (err) {
     console.error("Chyba při komunikaci s Craftlist API:", err);
-    res.status(500).json({ error: "Craftlist API" });
+    res.status(500).json({ error: "Chyba Craftlist API" });
   }
 });
 
-// MinecraftServery.eu
+// MinecraftServery.eu (funkční)
 app.get("/api/minecraftlist/:token", async (req, res) => {
   try {
     // Info serveru
