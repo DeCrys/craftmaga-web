@@ -67,11 +67,12 @@ const VotingSection = () => {
       {
         id: "minecraft-list",
         name: "Minecraft-list",
-        url: "https://www.minecraft-list.cz/admin/servers/crafmaga",
+        url: "https://www.minecraft-list.cz/server/crafmaga",
         reward: "50 coinů + Bonus",
         icon: "https://www.minecraft-list.cz/assets/images/logo.svg?id=52de4764faffcb65049f",
         type: "serverlist",
         slug: "crafmaga",
+        token: "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9",
       },
     ],
     []
