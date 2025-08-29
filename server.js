@@ -90,48 +90,31 @@ app.get("/api/minecraftlist/:token", async (req, res) => {
 });
 
 // Minecraft-list (zatint nefunkční - čeká se na opravu API)
-app.get("/api/minecraft-list/:slug", async (req, res) => {
-  const { slug } = req.params;  // správně slug, ne id
-  const apiToken = "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9"; // Tvůj API token
+app.get("/api/minecraft-list/:token", async (req, res) => {
+  const token = req.params.token;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
 
   try {
-    const headers = {
-      "Authorization": `Bearer ${apiToken}`,  // přidání tokenu do hlavičky
-    };
-
-    // 1. Získání základních informací o serveru (pro pozici)
-    const serverInfoRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/`, {
-      headers,
-    });
+    const serverInfoRes = await fetch(`https://www.minecraft-list.cz/api/server/${token}/info`);
     const serverInfoData = await serverInfoRes.json();
 
-    // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
-    const votesListRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/votes/`, {
-      headers,
-    });
+    const votesListRes = await fetch(`https://www.minecraft-list.cz/api/server/${token}/votes/`);
     const votesListData = await votesListRes.json();
 
-    // Poslední hlasující
-    const lastVoter = Array.isArray(votesListData.votes) && votesListData.votes.length > 0
-      ? votesListData.votes[0].username
-      : null;
+    const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname : null;
 
-    // Počet hlasů
-    const votes = votesListData.votes_count ?? votesListData.vote_count ?? null;
+    const votes = serverInfoData.votes || 0;
+    const position = serverInfoData.rank || null;
 
-    // Pozice serveru
-    const position = serverInfoData.rank ?? serverInfoData.position ?? null;
-
-    res.json({
-      votes,
-      position,
-      lastVoter,
-    });
+    res.json({ votes, position, lastVoter });
   } catch (err) {
     console.error("Chyba při komunikaci s Minecraft-list API:", err);
-    res.status(500).json({ error: "Chyba Minecraft-list API" });
+    res.status(500).json({ error: "Chyba Minecraft-listAPI" });
   }
 });
+
 
 
 // Spuštění serveru
