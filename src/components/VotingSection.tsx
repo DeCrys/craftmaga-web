@@ -57,7 +57,7 @@ const VotingSection = () => {
       },
       {
         id: "minecraftlist",
-        name: "MinecraftServery.eu",
+        name: "MinecraftServery",
         url: "https://minecraftservery.eu/server/craftmaga/vote",
         reward: "75 coinů + XP Boost",
         icon: "https://minecraftservery.eu/favicon.ico",
@@ -65,13 +65,13 @@ const VotingSection = () => {
         token: "XdpEvrYRpy39slJQ",
       },
       {
-        id: "minebook",
-        name: "Minebook",
-        url: "https://minebook.eu/server/222",
+        id: "minecraft-list",
+        name: "Minecraft-list",
+        url: "https://www.minecraft-list.cz/admin/servers/crafmaga",
         reward: "50 coinů + Bonus",
-        icon: "https://minebook.eu/images/icons/favicon.ico",
+        icon: "https://www.minecraft-list.cz/assets/images/logo.svg?id=52de4764faffcb65049f",
         type: "serverlist",
-        slug: "222",
+        slug: "crafmaga",
       },
     ],
     []

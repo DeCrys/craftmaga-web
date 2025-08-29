@@ -89,40 +89,37 @@ app.get("/api/minecraftlist/:token", async (req, res) => {
   }
 });
 
-// Minebook (zatint nefunkční - čeká se na opravu API)
-app.get("/api/minebook/:id", async (req, res) => {
-  const { id } = req.params;
+// Minecraft-list (zatint nefunkční - čeká se na opravu API)
+app.get("/api/minecraft-list/:slug", async (req, res) => {
+  const { slug } = req.params;  // musí být slug, ne id
 
   try {
     // 1. Získání základních informací o serveru (pro pozici)
-    const serverInfoRes = await fetch(`https://minebook.eu/api/server/${id}/`);
+    const serverInfoRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/`);
     const serverInfoData = await serverInfoRes.json();
 
-    // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
-    const votesListRes = await fetch(`https://minebook.eu/api/server/${id}/votes/`);
+    // 2. Získání seznamu hlasů
+    const votesListRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/votes/`);
     const votesListData = await votesListRes.json();
 
-    // Poslední hlasující - ověř pole a získání username
+    // Poslední hlasující
     const lastVoter = Array.isArray(votesListData.votes) && votesListData.votes.length > 0
       ? votesListData.votes[0].username
       : null;
 
-    // Počet hlasů - některé API může vracet jako votes_count nebo vote_count, ověř si podle odpovědi
+    // Počet hlasů
     const votes = votesListData.votes_count ?? votesListData.vote_count ?? null;
 
-    // Pozice serveru - může být v rank nebo position, opět ověř podle dat
+    // Pozice serveru
     const position = serverInfoData.rank ?? serverInfoData.position ?? null;
 
-    res.json({
-      votes,
-      position,
-      lastVoter,
-    });
+    res.json({ votes, position, lastVoter });
   } catch (err) {
-    console.error("Chyba při komunikaci s Minebook API:", err);
-    res.status(500).json({ error: "Chyba Minebook API" });
+    console.error("Chyba při komunikaci s Minecraft-list API:", err);
+    res.status(500).json({ error: "Chyba Minecraft-list API" });
   }
 });
+
 
 // Spuštění serveru
 app.listen(PORT, () => {
