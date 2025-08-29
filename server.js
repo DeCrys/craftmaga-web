@@ -65,29 +65,36 @@ app.get("/api/craftlist/:token", async (req, res) => {
 // MinecraftServery.eu (funkční)
 app.get("/api/minecraftlist/:token", async (req, res) => {
   try {
-    // Info serveru
-    const rInfo = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/info`, {
-      headers: { Authorization: req.params.token }
+    const token = req.params.token;
+
+    // Info o serveru
+    const rInfo = await fetch(`https://minecraftservery.eu/api/v1/server/${token}/info`, {
+      headers: { Authorization: token }
     });
     const infoData = await rInfo.json();
 
     // Hlasy
-    const rVotes = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/votes`, {
-      headers: { Authorization: req.params.token }
+    const rVotes = await fetch(`https://minecraftservery.eu/api/v1/server/${token}/votes`, {
+      headers: { Authorization: token }
     });
     const votesData = await rVotes.json();
-    // Vrací pole, nejnovější je na konci, je potřeba vzít poslední
+
+    // Poslední hlas
     const lastVoteObj = votesData.votes?.length ? votesData.votes[votesData.votes.length - 1] : null;
 
+    // Pozice serveru je přímo v infoData.position
+    // votes je celkový počet hlasů z infoData.votes
     res.json({
-      votes: infoData.position?.votes ?? null,
-      position: infoData.position?.rating ?? null,
+      votes: infoData.votes ?? 0,
+      position: infoData.position ?? null,
       lastVoter: lastVoteObj?.nickname ?? null
     });
   } catch (err) {
+    console.error("Chyba při komunikaci s MinecraftServery API:", err);
     res.status(500).json({ error: "Chyba MinecraftServery API" });
   }
 });
+
 
 // Minecraft-list (zatint nefunkční - čeká se na opravu API)
 app.get("/api/minecraft-list/:slug", async (req, res) => {
