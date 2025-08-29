@@ -10,26 +10,6 @@ app.use(cors());
 // Czech-Craft (bez klíče)
 app.get("/api/czech-craft/:slug", async (req, res) => {
   const { slug } = req.params;
-  try {
-    const r = await fetch(`https://czech-craft.eu/api/server/${slug}`);
-    const data = await r.json();
-
-    const lastVote = data?.data?.[0]; // poslední hlasující
-    const lastVoter = lastVote?.username ?? null;
-
-    res.json({
-      votes: data?.votes_count ?? null,
-      position: data?.position ?? null,
-      lastVoter,
-    });
-  } catch (err) {
-    res.status(500).json({ error: "Chyba Czech-Craft API" });
-  }
-});
-
-// Czech-Craft (bez klíče)
-app.get("/api/czech-craft/:slug", async (req, res) => {
-  const { slug } = req.params;
 
   try {
     // 1. Získání základních informací o serveru (pro pozici)
@@ -52,6 +32,26 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
   } catch (err) {
     console.error("Chyba při komunikaci s Czech-Craft API:", err);
     res.status(500).json({ error: "Chyba Czech-Craft API" });
+  }
+});
+
+// Craftlist (s API tokenem)
+app.get("/api/craftlist/:slug", async (req, res) => {
+  const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
+  try {
+    const r = await fetch(`https://api.craftlist.org/server/${req.params.slug}?token=${token}`);
+    const data = await r.json();
+
+    const lastVote = data?.votes?.[0];
+    const lastVoter = lastVote?.username ?? null;
+
+    res.json({
+      votes: data?.votes_count ?? data?.votes ?? null,
+      position: data?.position ?? null,
+      lastVoter,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Chyba Craftlist API" });
   }
 });
 
