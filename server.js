@@ -35,7 +35,7 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
   }
 });
 
-// Craftlist (zatint nefunkční - čeká se na opravu API)
+// Craftlist (funkční)
 app.get("/api/craftlist/:token", async (req, res) => {
   const token = req.params.token;
   const now = new Date();
@@ -73,11 +73,21 @@ app.get("/api/minebook/:id", async (req, res) => {
     // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
     const votesListRes = await fetch(`https://minebook.eu/api/server/${id}/votes/`);
     const votesListData = await votesListRes.json();
-    // Zpracování dat z obou API volání
-    const lastVoter = votesListData?.data?.[0]?.username ?? null; // Získáme username prvního prvku v poli `data`
+
+    // Poslední hlasující - ověř pole a získání username
+    const lastVoter = Array.isArray(votesListData.votes) && votesListData.votes.length > 0
+      ? votesListData.votes[0].username
+      : null;
+
+    // Počet hlasů - některé API může vracet jako votes_count nebo vote_count, ověř si podle odpovědi
+    const votes = votesListData.votes_count ?? votesListData.vote_count ?? null;
+
+    // Pozice serveru - může být v rank nebo position, opět ověř podle dat
+    const position = serverInfoData.rank ?? serverInfoData.position ?? null;
+
     res.json({
-      votes: votesListData?.vote_count ?? null, // Správný název klíče je `vote_count`
-      position: serverInfoData?.position ?? null,
+      votes,
+      position,
       lastVoter,
     });
   } catch (err) {
