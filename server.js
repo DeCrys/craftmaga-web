@@ -35,20 +35,23 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
   }
 });
 
-// Craftlist 
+// Craftlist
 app.get("/api/craftlist/:slug", async (req, res) => {
   const { slug } = req.params;
   const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
 
   try {
-    const r = await fetch(`https://craftlist.org/api/server/${slug}/?token=${token}`);
+    const r = await fetch(`https://api.craftlist.org/server/${slug}?token=${token}`);
     const data = await r.json();
 
+    // Předpoklad: data v JSONu
+    const votes = data?.votes_count ?? null;
+    const position = data?.position ?? null;
     const lastVoter = data?.lastVote?.username ?? null;
 
     res.json({
-      votes: data?.votes_count ?? null,
-      position: data?.position ?? null,
+      votes,
+      position,
       lastVoter,
     });
   } catch (err) {
