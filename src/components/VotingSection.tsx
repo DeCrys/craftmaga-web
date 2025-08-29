@@ -30,7 +30,7 @@ const numberFmt = new Intl.NumberFormat("cs-CZ");
 const VotingSection = () => {
   const initialSites: VotingSite[] = useMemo(
     () => [
-      {
+      { 
         id: "czech-craft",
         name: "Czech-Craft",
         url: "https://czech-craft.eu/server/crafmaga",
@@ -46,16 +46,16 @@ const VotingSection = () => {
         reward: "Bonus za hlas",
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
-        slug: "crafmaga",
+        slug: "craftmaga",
       },
       {
         id: "minecraftlist",
         name: "MinecraftServery",
-        url: "https://minecraftservery.eu/server/crafmaga/vote",
+        url: "https://minecraftservery.eu/server/craftmaga/vote",
         reward: "75 coinů + XP Boost",
         icon: "https://minecraftservery.eu/favicon.ico",
         type: "minecraftlist",
-        slug: "crafmaga",
+        slug: "craftmaga",
       },
       {
         id: "minecraft-list",
