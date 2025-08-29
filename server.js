@@ -37,41 +37,33 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
   }
 });
 
-// Craftlist
-app.get("/api/craftlist", async (req, res) => {
-  const token = "hdlnzauscxe4xidt7sph"; // Tvůj API token
+// Craftlist (zatint nefunkční - čeká se na opravu API)
+app.get("/api/craftlist/:token", async (req, res) => {
+  const token = req.params.token;
   const now = new Date();
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
 
   try {
-    // Získání informací o serveru
     const serverInfoRes = await fetch(`https://api.craftlist.org/v1/${token}/info`);
     const serverInfoData = await serverInfoRes.json();
 
-    // Získání seznamu hlasů za aktuální měsíc
     const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/${year}/${month}`);
     const votesListData = await votesListRes.json();
 
-    // Poslední hlasující (první položka v poli)
     const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname : null;
 
-    // Počet hlasů a pozice
     const votes = serverInfoData.votes || 0;
     const position = serverInfoData.rank || null;
 
-    res.json({
-      votes,
-      position,
-      lastVoter,
-    });
+    res.json({ votes, position, lastVoter });
   } catch (err) {
     console.error("Chyba při komunikaci s Craftlist API:", err);
     res.status(500).json({ error: "Chyba Craftlist API" });
   }
 });
 
-// Minebook (bez klíče)
+// Minebook (zatint nefunkční - čeká se na opravu API)
 app.get("/api/minebook/:id", async (req, res) => {
   const { id } = req.params;
 

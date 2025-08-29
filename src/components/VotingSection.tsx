@@ -53,6 +53,7 @@ const VotingSection = () => {
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
         slug: "crafmaga",
+        token: "hdlnzauscxe4xidt7sph"
       },
       {
         id: "minecraftlist",
