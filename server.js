@@ -91,30 +91,25 @@ app.get("/api/minecraftlist/:token", async (req, res) => {
 });
 
 // Minebook (bez klíče)
-app.get("/api/minebook/:slug", async (req, res) => {
-  const { slug } = req.params;
+app.get("/api/minebook/:id", async (req, res) => {
+  const { id } = req.params;
 
   try {
-    // 1. Získání základních informací o serveru (pro pozici)
-    const serverInfoRes = await fetch(`https://minebook.eu/api/server/${slug}/`);
-    const serverInfoData = await serverInfoRes.json();
+    const r = await fetch(`https://minebook.eu/api/server/${id}/`);
+    const data = await r.json();
 
-    // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
-    const votesListRes = await fetch(`https://minebook.eu/api/server/${slug}/votes/`);
-    const votesListData = await votesListRes.json();
-
-    // Zpracování dat z obou API volání
-    const lastVoter = votesListData?.data?.[0]?.username ?? null; // Získáme username prvního prvku v poli `data`
+    const votes = data?.total_votes ?? null;
+    const position = data?.rank ?? null;
+    const lastVoter = data?.last_voter ?? null;
 
     res.json({
-      votes: votesListData?.vote_count ?? null, // Správný název klíče je `vote_count`
-      position: serverInfoData?.position ?? null,
+      votes,
+      position,
       lastVoter,
     });
-
   } catch (err) {
-    console.error("Chyba při komunikaci s Craftlist API:", err);
-    res.status(500).json({ error: "Craftlist API" });
+    console.error("Chyba při komunikaci s Minebook API:", err);
+    res.status(500).json({ error: "Chyba Minebook API" });
   }
 });
 
