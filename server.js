@@ -104,13 +104,13 @@ app.get("/api/minecraft-list/:slug", async (req, res) => {
     const serverInfoData = await serverInfoRes.json();
 
     // Počet hlasů je přímo v serverInfoData.votes
-    const votes = serverInfoData.votes ?? 0;
+    const votesListRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/`);
+    const votesListData = await votesListRes.json();
 
-    // Pozice serveru
-    const position = serverInfoData.rank ?? serverInfoData.position ?? null;
+    const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname : null;
 
-    // U Minecraft-list API v datech není info o posledním hlasujícím (pokud nevznikne endpoint)
-    const lastVoter = null;
+    const votes = serverInfoData.votes || 0;
+    const position = serverInfoData.rank || null;
 
     res.json({ votes, position, lastVoter });
   } catch (err) {
