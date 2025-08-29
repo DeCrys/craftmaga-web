@@ -36,29 +36,23 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
 });
 
 // Craftlist
-app.get("/api/craftlist", async (req, res) => {
-  const token = "hdlnzauscxe4xidt7sph"; // Tvůj API token
-
-  // aktuální rok a měsíc pro hlasování (formát YYYY a MM)
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+app.get("/api/craftlist/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
 
   try {
-    // Získání základních informací o serveru
+    // 1. Získání informací o serveru (info)
     const serverInfoRes = await fetch(`https://api.craftlist.org/v1/${token}/info`);
     const serverInfoData = await serverInfoRes.json();
-
-    // Získání seznamu hlasů za aktuální měsíc
-    const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/2025/08`);
+    
+    // 2. Získání seznamu hlasů (votes)
+    const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/`);
     const votesListData = await votesListRes.json();
-
-    // Získání posledního hlasujícího (pokud je nějaký hlas)
-    const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname || null : null;
-
-    // Přístup ke klíčům (ověř si podle skutečné odpovědi)
-    const votes = serverInfoData.votes || null;
-    const position = serverInfoData.position || null;
+    
+    // Zpracování dat
+    const votes = serverInfoData?.votes ?? null;
+    const position = serverInfoData?.rank ?? null;
+    const lastVoter = votesListData?.data?.[0]?.username ?? null;
 
     res.json({
       votes,
@@ -68,33 +62,6 @@ app.get("/api/craftlist", async (req, res) => {
   } catch (err) {
     console.error("Chyba při komunikaci s Craftlist API:", err);
     res.status(500).json({ error: "Chyba Craftlist API" });
-  }
-});
-
-// MinecraftServery.eu (funkční)
-app.get("/api/minecraftlist/:token", async (req, res) => {
-  try {
-    // Info serveru
-    const rInfo = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/info`, {
-      headers: { Authorization: req.params.token }
-    });
-    const infoData = await rInfo.json();
-
-    // Hlasy
-    const rVotes = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/votes`, {
-      headers: { Authorization: req.params.token }
-    });
-    const votesData = await rVotes.json();
-    // Vrací pole, nejnovější je na konci, je potřeba vzít poslední
-    const lastVoteObj = votesData.votes?.length ? votesData.votes[votesData.votes.length - 1] : null;
-
-    res.json({
-      votes: infoData.position?.votes ?? null,
-      position: infoData.position?.rating ?? null,
-      lastVoter: lastVoteObj?.nickname ?? null
-    });
-  } catch (err) {
-    res.status(500).json({ error: "Chyba MinecraftServery API" });
   }
 });
 
