@@ -92,25 +92,25 @@ app.get("/api/minecraftlist/:token", async (req, res) => {
 // Minecraft-list (zatint nefunkční - čeká se na opravu API)
 app.get("/api/minecraft-list/:slug", async (req, res) => {
   const { slug } = req.params;
-  const apiToken = "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9"; // Ulož token bezpečně na backendu
+  const apiToken = "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9";
 
   try {
     const headers = {
       "Authorization": `Bearer ${apiToken}`,
     };
 
+    // Získání základních informací o serveru (včetně hlasů)
     const serverInfoRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/`, { headers });
     const serverInfoData = await serverInfoRes.json();
 
-    const votesListRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}/votes/`, { headers });
-    const votesListData = await votesListRes.json();
+    // Počet hlasů je přímo v serverInfoData.votes
+    const votes = serverInfoData.votes ?? 0;
 
-    const lastVoter = Array.isArray(votesListData.votes) && votesListData.votes.length > 0 
-      ? votesListData.votes[0].username 
-      : null;
-
-    const votes = votesListData.votes_count ?? votesListData.vote_count ?? 0;
+    // Pozice serveru
     const position = serverInfoData.rank ?? serverInfoData.position ?? null;
+
+    // U Minecraft-list API v datech není info o posledním hlasujícím (pokud nevznikne endpoint)
+    const lastVoter = null;
 
     res.json({ votes, position, lastVoter });
   } catch (err) {
@@ -118,6 +118,7 @@ app.get("/api/minecraft-list/:slug", async (req, res) => {
     res.status(500).json({ error: "Chyba Minecraft-list API" });
   }
 });
+
 
 
 
