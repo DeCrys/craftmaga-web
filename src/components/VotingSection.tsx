@@ -99,7 +99,7 @@ const VotingSection = () => {
         const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/czech-craft/${site.slug}`);
         data = await res.json();
       } else if (site.type === "craftlist" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/craftlist/${site.slug}`);
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/craftlist/${site.token}`);
         data = await res.json();
       } else if (site.type === "minecraftlist" && site.token) {
         const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraftlist/${site.token}`);
@@ -219,7 +219,7 @@ const VotingSection = () => {
                     <div className="flex items-center gap-4">
                       <img src={site.icon} alt={site.name} className="w-12 h-12 rounded-lg shadow-md" />
                       <div>
-                        <h4 className="text-xl font-bold text-white group-hover:text-primary transition-colors --gradient-secondary">{site.name}</h4>
+                        <h4 className="text-xl font-bold text-white group-hover:text-primary transition-colors gradient-secondary">{site.name}</h4>
                         <p className="text-sm gradient-text font-semibold">{site.reward}</p>
                       </div>
                     </div>
