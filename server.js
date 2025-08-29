@@ -2,6 +2,8 @@ import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
 
+const express = require("express");
+const fetch = require("node-fetch");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -38,14 +40,12 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
 // Craftlist
 app.get("/api/craftlist", async (req, res) => {
   const token = "hdlnzauscxe4xidt7sph"; // Tvůj API token
-
-  // aktuální rok a měsíc pro hlasování (formát YYYY a MM)
   const now = new Date();
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
 
   try {
-    // Získání základních informací o serveru
+    // Získání informací o serveru
     const serverInfoRes = await fetch(`https://api.craftlist.org/v1/${token}/info`);
     const serverInfoData = await serverInfoRes.json();
 
@@ -53,12 +53,12 @@ app.get("/api/craftlist", async (req, res) => {
     const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/${year}/${month}`);
     const votesListData = await votesListRes.json();
 
-    // Získání posledního hlasujícího (pokud je nějaký hlas)
-    const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname || null : null;
+    // Poslední hlasující (první položka v poli)
+    const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname : null;
 
-    // Přístup ke klíčům (ověř si podle skutečné odpovědi)
-    const votes = serverInfoData.votes || null;
-    const position = serverInfoData.position || null;
+    // Počet hlasů a pozice
+    const votes = serverInfoData.votes || 0;
+    const position = serverInfoData.rank || null;
 
     res.json({
       votes,
