@@ -36,25 +36,29 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
 });
 
 // Craftlist
-app.get("/api/craftlist/:slug", async (req, res) => {
-  const { slug } = req.params;
-  const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
+app.get("/api/craftlist", async (req, res) => {
+  const token = "hdlnzauscxe4xidt7sph"; // Tvůj API token
+
+  // aktuální rok a měsíc pro hlasování (formát YYYY a MM)
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
 
   try {
-    // Získání základních informací o serveru (info)
+    // Získání základních informací o serveru
     const serverInfoRes = await fetch(`https://api.craftlist.org/v1/${token}/info`);
     const serverInfoData = await serverInfoRes.json();
 
-    // Získání seznamu hlasů (votes)
-    const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/`); // Předpokladem je, že tento endpoint vrací všechny hlasy, nebo je potřeba zadat rok a měsíc
+    // Získání seznamu hlasů za aktuální měsíc
+    const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/${year}/${month}`);
     const votesListData = await votesListRes.json();
 
-    // Zpracování dat z obou API volání
-    const lastVoter = votesListData?.data?.[0]?.username ?? null; 
-    
-    // Klíče v JSONu se mohou lišit, proto je nutné je ověřit v odpovědi
-    const votes = serverInfoData?.votes ?? null; 
-    const position = serverInfoData?.position ?? null;
+    // Získání posledního hlasujícího (pokud je nějaký hlas)
+    const lastVoter = Array.isArray(votesListData) && votesListData.length > 0 ? votesListData[0].nickname || null : null;
+
+    // Přístup ke klíčům (ověř si podle skutečné odpovědi)
+    const votes = serverInfoData.votes || null;
+    const position = serverInfoData.position || null;
 
     res.json({
       votes,
