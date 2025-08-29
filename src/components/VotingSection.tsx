@@ -104,8 +104,8 @@ const VotingSection = () => {
       } else if (site.type === "minecraftlist" && site.token) {
         const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraftlist/${site.token}`);
         data = await res.json();
-      } else if (site.type === "serverlist" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minebook/${site.slug}`);
+      } else if (site.type === "serverlist" && site.id) {
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minebook/${site.id}`);
         data = await res.json();
       }
 
