@@ -3,18 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Vote, Gift, Star, ExternalLink, Trophy, LucideIcon } from "lucide-react";
 
-// Drobné vylepšení: ikony pro různé typy informací
 const InfoIcon: Record<string, LucideIcon> = {
   votes: Vote,
   position: Trophy,
   lastVoter: Star,
 };
 
-type SiteType =
-  | "czech-craft"
-  | "craftlist"
-  | "minecraftlist"
-  | "serverlist";
+type SiteType = "czech-craft" | "craftlist" | "minecraftlist" | "serverlist";
 
 type VotingSite = {
   id: string;
@@ -26,7 +21,6 @@ type VotingSite = {
   icon: string;
   type: SiteType;
   slug?: string;
-  token?: string;
   lastVoter?: string | null;
   lastVoterSkin?: string | null;
 };
@@ -52,17 +46,16 @@ const VotingSection = () => {
         reward: "Bonus za hlas",
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
-        slug: "craftmaga",
-        token: "hdlnzauscxe4xidt7sph",
+        slug: "crafmaga",
       },
       {
         id: "minecraftlist",
         name: "MinecraftServery",
-        url: "https://minecraftservery.eu/server/craftmaga/vote",
+        url: "https://minecraftservery.eu/server/crafmaga/vote",
         reward: "75 coinů + XP Boost",
         icon: "https://minecraftservery.eu/favicon.ico",
         type: "minecraftlist",
-        token: "XdpEvrYRpy39slJQ",
+        slug: "crafmaga",
       },
       {
         id: "minecraft-list",
@@ -72,7 +65,6 @@ const VotingSection = () => {
         icon: "https://www.minecraft-list.cz/assets/images/logo.svg?id=52de4764faffcb65049f",
         type: "serverlist",
         slug: "crafmaga",
-        token: "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9",
       },
     ],
     []
@@ -97,20 +89,10 @@ const VotingSection = () => {
 
       let data: any = null;
 
-      if (site.type === "czech-craft" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/czech-craft/${site.slug}`);
-        data = await res.json();
-      } else if (site.type === "craftlist" && site.token) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/craftlist/${site.token}`);
-        data = await res.json();
-      } else if (site.type === "minecraftlist" && site.token) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraftlist/${site.token}`);
-        data = await res.json();
-      } else if (site.type === "serverlist" && site.slug) {
-        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/minecraft-list/${site.slug}`);
+      if (site.slug) {
+        const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/${site.type}/${site.slug}`);
         data = await res.json();
       }
-
 
       if (data?.lastVoter) {
         const skin = `https://minotar.net/helm/${data.lastVoter}/32`;
@@ -124,12 +106,12 @@ const VotingSection = () => {
         prev.map((s) =>
           s.id === site.id
             ? {
-              ...s,
-              position: typeof data?.position === "number" ? data.position : s.position ?? null,
-              votes: typeof data?.votes === "number" ? data.votes : s.votes ?? null,
-              lastVoter: site.lastVoter || s.lastVoter,
-              lastVoterSkin: site.lastVoterSkin || s.lastVoterSkin,
-            }
+                ...s,
+                position: typeof data?.position === "number" ? data.position : s.position ?? null,
+                votes: typeof data?.votes === "number" ? data.votes : s.votes ?? null,
+                lastVoter: site.lastVoter || s.lastVoter,
+                lastVoterSkin: site.lastVoterSkin || s.lastVoterSkin,
+              }
             : s
         )
       );
@@ -142,9 +124,7 @@ const VotingSection = () => {
 
   useEffect(() => {
     initialSites.forEach((site) => {
-      if (["czech-craft", "craftlist", "minecraftlist", "serverlist"].includes(site.type)) {
-        loadSiteLiveData(site);
-      }
+      loadSiteLiveData(site);
     });
   }, [initialSites]);
 
@@ -165,7 +145,6 @@ const VotingSection = () => {
         <div className="absolute top-1/3 left-0 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-1/3 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
       </div>
-
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-6 glass px-4 py-2 rounded-full">
@@ -179,7 +158,6 @@ const VotingSection = () => {
             Hlasuj pro náš server a získej úžasné odměny. Tvoje podpora nám pomáhá růst!
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-4xl mx-auto">
           {rewards.map((reward, index) => {
             const IconComponent = reward.icon;
@@ -201,15 +179,12 @@ const VotingSection = () => {
             );
           })}
         </div>
-
         <div className="max-w-4xl mx-auto">
           <h3 className="text-2xl font-bold text-center mb-8 gradient-text">Hlasovací weby</h3>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {votingSites.map((site, index) => {
               const isLoading = !!loadingIds[site.id];
               const supported = ["czech-craft", "craftlist", "minecraftlist", "serverlist"].includes(site.type);
-
               return (
                 <div
                   key={site.id}
@@ -217,7 +192,6 @@ const VotingSection = () => {
                   onClick={() => openVotingLink(site)}
                   style={{ animationDelay: `${index * 0.1}s`, animation: "slide-in-up 0.6s ease-out both" }}
                 >
-                  {/* Horní část: Ikona, Název, Externí odkaz, Pozice */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex items-center gap-4">
                       <img src={site.icon} alt={site.name} className="w-12 h-12 rounded-lg shadow-md" />
@@ -235,8 +209,6 @@ const VotingSection = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Spodní část: Hlasy a Poslední hlasující */}
                   <div className="border-t border-gray-700/50 pt-4 mt-4 flex flex-col items-center">
                     <div className="flex items-center gap-2 text-sm text-foreground/70 mb-2">
                       <div className="flex items-center gap-2">
@@ -247,13 +219,12 @@ const VotingSection = () => {
                         {typeof site.votes === "number"
                           ? numberFmt.format(site.votes)
                           : isLoading
-                            ? "Načítám…"
-                            : supported
-                              ? "—"
-                              : "N/A"}
+                          ? "Načítám…"
+                          : supported
+                          ? "—"
+                          : "N/A"}
                       </span>
                     </div>
-
                     {site.lastVoter && (
                       <div className="flex items-center gap-2 text-sm text-foreground/70">
                         <div className="flex items-center gap-2">
@@ -267,8 +238,6 @@ const VotingSection = () => {
                       </div>
                     )}
                   </div>
-
-                  {/* Překrytí pro hover efekt */}
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[var(--radius-lg)] pointer-events-none"></div>
                 </div>
               );
