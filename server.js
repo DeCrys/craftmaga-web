@@ -41,13 +41,20 @@ app.get("/api/craftlist/:slug", async (req, res) => {
   const token = "hdlnzauscxe4xidt7sph"; // tvůj API token
 
   try {
-    const r = await fetch(`https://api.craftlist.org/server/${slug}?token=${token}`);
-    const data = await r.json();
+    // Získání základních informací o serveru (info)
+    const serverInfoRes = await fetch(`https://api.craftlist.org/v1/${token}/info`);
+    const serverInfoData = await serverInfoRes.json();
 
-    // Předpoklad: data v JSONu
-    const votes = data?.votes_count ?? null;
-    const position = data?.position ?? null;
-    const lastVoter = data?.lastVote?.username ?? null;
+    // Získání seznamu hlasů (votes)
+    const votesListRes = await fetch(`https://api.craftlist.org/v1/${token}/votes/`); // Předpokladem je, že tento endpoint vrací všechny hlasy, nebo je potřeba zadat rok a měsíc
+    const votesListData = await votesListRes.json();
+
+    // Zpracování dat z obou API volání
+    const lastVoter = votesListData?.data?.[0]?.username ?? null; 
+    
+    // Klíče v JSONu se mohou lišit, proto je nutné je ověřit v odpovědi
+    const votes = serverInfoData?.votes ?? null; 
+    const position = serverInfoData?.position ?? null;
 
     res.json({
       votes,
