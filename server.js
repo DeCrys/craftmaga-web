@@ -95,16 +95,18 @@ app.get("/api/minebook/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const r = await fetch(`https://minebook.eu/api/server/${id}/`);
-    const data = await r.json();
+    // 1. Získání základních informací o serveru (pro pozici)
+    const serverInfoRes = await fetch(`https://minebook.eu/api/server/${id}/`);
+    const serverInfoData = await serverInfoRes.json();
 
-    const votes = data?.total_votes ?? null;
-    const position = data?.rank ?? null;
-    const lastVoter = data?.last_voter ?? null;
-
+    // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
+    const votesListRes = await fetch(`https://minebook.eu/api/server/${id}/votes/`);
+    const votesListData = await votesListRes.json();
+    // Zpracování dat z obou API volání
+    const lastVoter = votesListData?.data?.[0]?.username ?? null; // Získáme username prvního prvku v poli `data`
     res.json({
-      votes,
-      position,
+      votes: votesListData?.vote_count ?? null, // Správný název klíče je `vote_count`
+      position: serverInfoData?.position ?? null,
       lastVoter,
     });
   } catch (err) {
