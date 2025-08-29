@@ -12,7 +12,6 @@ app.use(cors());
 
 // Načti tokeny z env proměnných
 const tokens = {
-  "czech-craft": process.env.CZECH_CRAFT_API_TOKEN,
   "craftlist": process.env.CRAFTLIST_API_TOKEN,
   "minecraftlist": process.env.MINECRAFTSERVERY_API_TOKEN,
   "serverlist": process.env.MINECRAFT_LIST_API_TOKEN,
