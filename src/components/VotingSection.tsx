@@ -52,7 +52,7 @@ const VotingSection = () => {
         reward: "Bonus za hlas",
         icon: "https://craftlist.org/favicon.ico",
         type: "craftlist",
-        slug: "crafmaga",
+        slug: "craftmaga",
         token: "hdlnzauscxe4xidt7sph"
       },
       {
