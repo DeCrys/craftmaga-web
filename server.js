@@ -61,6 +61,34 @@ app.get("/api/craftlist/:token", async (req, res) => {
   }
 });
 
+
+// MinecraftServery.eu (funkční)
+app.get("/api/minecraftlist/:token", async (req, res) => {
+  try {
+    // Info serveru
+    const rInfo = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/info`, {
+      headers: { Authorization: req.params.token }
+    });
+    const infoData = await rInfo.json();
+
+    // Hlasy
+    const rVotes = await fetch(`https://minecraftservery.eu/api/v1/server/${req.params.token}/votes`, {
+      headers: { Authorization: req.params.token }
+    });
+    const votesData = await rVotes.json();
+    // Vrací pole, nejnovější je na konci, je potřeba vzít poslední
+    const lastVoteObj = votesData.votes?.length ? votesData.votes[votesData.votes.length - 1] : null;
+
+    res.json({
+      votes: infoData.position?.votes ?? null,
+      position: infoData.position?.rating ?? null,
+      lastVoter: lastVoteObj?.nickname ?? null
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Chyba MinecraftServery API" });
+  }
+});
+
 // Minebook (zatint nefunkční - čeká se na opravu API)
 app.get("/api/minebook/:id", async (req, res) => {
   const { id } = req.params;
