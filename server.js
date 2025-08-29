@@ -1,16 +1,12 @@
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// Načti tokeny z env proměnných
 const tokens = {
   "craftlist": process.env.CRAFTLIST_API_TOKEN,
   "minecraftlist": process.env.MINECRAFTSERVERY_API_TOKEN,
@@ -22,16 +18,19 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
   const { slug } = req.params;
 
   try {
+    // 1. Získání základních informací o serveru (pro pozici)
     const serverInfoRes = await fetch(`https://czech-craft.eu/api/server/${slug}/`);
     const serverInfoData = await serverInfoRes.json();
 
+    // 2. Získání seznamu hlasů (pro počet hlasů a posledního hlasujícího)
     const votesListRes = await fetch(`https://czech-craft.eu/api/server/${slug}/votes/`);
     const votesListData = await votesListRes.json();
 
-    const lastVoter = votesListData?.data?.[0]?.username ?? null;
+    // Zpracování dat z obou API volání
+    const lastVoter = votesListData?.data?.[0]?.username ?? null; // Získáme username prvního prvku v poli `data`
 
     res.json({
-      votes: votesListData?.vote_count ?? null,
+      votes: votesListData?.vote_count ?? null, // Správný název klíče je `vote_count`
       position: serverInfoData?.position ?? null,
       lastVoter,
     });
@@ -43,9 +42,8 @@ app.get("/api/czech-craft/:slug", async (req, res) => {
 });
 
 // Craftlist (funkční)
-app.get("/api/craftlist/:slug", async (req, res) => {
-  const slug = req.params.slug;
-  const token = tokens["craftlist"];
+app.get("/api/craftlist/:token", async (req, res) => {
+  const token = req.params.token;
   const now = new Date();
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
@@ -69,24 +67,29 @@ app.get("/api/craftlist/:slug", async (req, res) => {
   }
 });
 
-// MinecraftServery.eu (funkční)
-app.get("/api/minecraftlist/:slug", async (req, res) => {
-  const slug = req.params.slug;
-  const token = tokens["minecraftlist"];
 
+// MinecraftServery.eu (funkční)
+app.get("/api/minecraftlist/:token", async (req, res) => {
   try {
+    const token = req.params.token;
+
+    // Info o serveru
     const rInfo = await fetch(`https://minecraftservery.eu/api/v1/server/${token}/info`, {
       headers: { Authorization: token }
     });
     const infoData = await rInfo.json();
 
+    // Hlasy
     const rVotes = await fetch(`https://minecraftservery.eu/api/v1/server/${token}/votes`, {
       headers: { Authorization: token }
     });
     const votesData = await rVotes.json();
 
+    // Poslední hlas
     const lastVoteObj = votesData.votes?.length ? votesData.votes[votesData.votes.length - 1] : null;
 
+    // Pozice serveru je přímo v infoData.position
+    // votes je celkový počet hlasů z infoData.votes
     res.json({
       votes: infoData.votes ?? 0,
       position: infoData.position ?? null,
@@ -98,24 +101,26 @@ app.get("/api/minecraftlist/:slug", async (req, res) => {
   }
 });
 
-// Minecraft-list
+
+// Minecraft-list (zatint nefunkční - čeká se na opravu API)
 app.get("/api/minecraft-list/:slug", async (req, res) => {
   const { slug } = req.params;
-  const apiToken = tokens["serverlist"];
+  const apiToken = "V2slAZWGVf017R4SBpqiYcI6Vi2cAwb9";
 
   try {
     const headers = {
       "Authorization": `Bearer ${apiToken}`,
     };
 
-    // Základní data serveru
+    // 1. Základní informace o serveru
     const serverInfoRes = await fetch(`https://www.minecraft-list.cz/api/server/${slug}`, { headers });
     const serverInfoData = await serverInfoRes.json();
 
-    // Hlasy
+    // 2. Seznam hlasování (pokud endpoint funguje)
     const votesListRes = await fetch(`https://www.minecraft-list.cz/api/votes/${slug}`, { headers });
     const votesListData = await votesListRes.json();
 
+    // Poslední hlasující (nejnovější hlas)
     const lastVoter = Array.isArray(votesListData.votes) && votesListData.votes.length > 0
       ? votesListData.votes[0].username
       : null;
@@ -131,6 +136,7 @@ app.get("/api/minecraft-list/:slug", async (req, res) => {
   }
 });
 
+// Spuštění serveru
 app.listen(PORT, () => {
   console.log(`API server běží na portu ${PORT}`);
 });
