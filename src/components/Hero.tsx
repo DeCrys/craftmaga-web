@@ -1,7 +1,8 @@
+
 import { ArrowRight, Sword, Users, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
-import heroImage from "@/assets/minecraft-hero-bg.jpg";
-import crafmagaLogo from "@/assets/crafmaga-logo.png";
+import heroImage from "@/assets/pattern-bg.jpg";
+import crafmagaLogo from "@/assets/pattern-bg.jpg";
 
 const Hero = () => {
   return (

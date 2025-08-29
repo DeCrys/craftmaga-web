@@ -27,7 +27,7 @@ const Contact = () => {
   ];
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden">
+    <section id="kontakt" className="py-24 px-6 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float" />

@@ -1,5 +1,6 @@
 import { Server, Heart, ExternalLink } from "lucide-react";
 import logoImage from "@/assets/logo.png";
+import {kontakt} from "@/components/Contact";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
