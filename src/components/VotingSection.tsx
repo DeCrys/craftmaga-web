@@ -98,7 +98,7 @@ const VotingSection = () => {
       if (site.type === "czech-craft" && site.slug) {
         const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/czech-craft/${site.slug}`);
         data = await res.json();
-      } else if (site.type === "craftlist" && site.slug) {
+      } else if (site.type === "craftlist" && site.token) {
         const res = await fetch(`https://crafmaga-web-production.up.railway.app/api/craftlist/${site.token}`);
         data = await res.json();
       } else if (site.type === "minecraftlist" && site.token) {
