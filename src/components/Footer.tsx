@@ -1,14 +1,14 @@
 import { Server, Heart, ExternalLink } from "lucide-react";
 import logoImage from "@/assets/logo.png";
-import {kontakt} from "@/components/Contact";
+import { Link } from "react-router-dom"; // 👈 důležitý import
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const links = [
-    { label: "Pravidla serveru", href: "#pravidla" },
-    { label: "Nápověda", href: "#napoveda" },
-    { label: "Kontakt", href: "#kontakt" },
+    { label: "Pravidla serveru", href: "/pravidla" },
+    { label: "Nápověda", href: "/napoveda" },
+    { label: "Kontakt", href: "/kontakt" },
     { label: "Discord", href: "https://discord.gg/eTuYxy7Ry9", external: true }
   ];
 
@@ -25,7 +25,6 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="text-center md:text-left">
             <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
-              
               <img
                 src={logoImage}
                 alt="logo"
@@ -46,14 +45,24 @@ const Footer = () => {
             <div className="space-y-2">
               {links.map((link) => (
                 <div key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-foreground/70 hover:text-primary transition-colors text-sm inline-flex items-center gap-1"
-                    {...(link.external && { target: "_blank", rel: "noopener noreferrer" })}
-                  >
-                    {link.label}
-                    {link.external && <ExternalLink className="w-3 h-3" />}
-                  </a>
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm inline-flex items-center gap-1"
+                    >
+                      {link.label}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm inline-flex items-center gap-1"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>

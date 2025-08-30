@@ -10,6 +10,6 @@ Připojte se k naší rostoucí komunitě a zažijte Minecraft v novém světle.
 
 * **IP adresa:** `play.craftmaga.cz`
 * **Discord:** [Připojte se k nám na Discordu!](https://discord.gg/eTuYxy7Ry9)
-* **Web:** [craftmaga.cz](https://craftmaga.cz)
+* **Web:** [craftmaga.net](https://craftmaga.cz)
 
 Těšíme se na vás!
