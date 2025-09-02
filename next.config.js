@@ -31,6 +31,15 @@ const nextConfig = {
       }
     ],
   },
+  // Rewrites pro dynmap
+  async rewrites() {
+    return [
+      {
+        source: '/map/:path*',
+        destination: '/api/dynmap/:path*',
+      },
+    ];
+  },
   // Pro Vercel deployment
   output: 'standalone',
 }

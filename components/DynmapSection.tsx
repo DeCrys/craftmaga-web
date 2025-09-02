@@ -7,18 +7,17 @@ const DynmapSection = () => {
   // Nový stav pro uchování centra mapy (souřadnice)
   const [mapCenter, setMapCenter] = useState({ x: 0, y: 64, z: 0 });
 
-  const dynmapBaseUrl = "https://dynmap.craftmaga.cz"; // URL Dynmap serveru
+  const dynmapBaseUrl = "/api/dynmap"; // Next.js API proxy
 
   useEffect(() => {
     // Funkce pro načtení online hráčů
     const fetchOnlinePlayers = async () => {
       try {
-        const corsProxy = 'https://api.allorigins.win/raw?url=';   
-        const dynmapUrl = `http://178.63.161.182:25238/up/world/${currentWorld}/`; // URL Dynmap API pro aktuální svět, url v čiselné podobě
+        const dynmapUrl = `/api/dynmap/up/world/${currentWorld}/`; // Next.js API proxy pro Dynmap
         console.log("Volám Dynmap API:", dynmapUrl);
         
         try {
-          const dynmapResponse = await fetch(`${corsProxy}${encodeURIComponent(dynmapUrl)}`);
+          const dynmapResponse = await fetch(dynmapUrl);
           const dynmapData = await dynmapResponse.json();
           console.log("Dynmap API vrací:", dynmapData);
           
