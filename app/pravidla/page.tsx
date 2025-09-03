@@ -1,6 +1,6 @@
 'use client'
 
-import Pravidla from "@/components/Pravidla"
+import Pravidla from "../../src/components/Pravidla"
 
 export const metadata = {
   title: 'Pravidla serveru - CraftMaga',

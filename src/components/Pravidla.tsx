@@ -4,7 +4,7 @@ import { Heart, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "@/assets/logo.png";
 
-const PravidlaServeru = () => {
+const Pravidla = () => {
   const pravidla = [
     { title: "1. Respektujte ostatní hráče", description: "Neurážejte, neobtěžujte a nevytvářejte konflikty s ostatními hráči." },
     { title: "2. Cheaty a hacky jsou zakázány", description: "Používání cheatů, modifikací nebo exploitů, které dávají výhodu, je přísně zakázáno." },
@@ -144,4 +144,4 @@ const PravidlaServeru = () => {
   );
 };
 
-export default PravidlaServeru;
+export default Pravidla;

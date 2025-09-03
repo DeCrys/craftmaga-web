@@ -1,13 +1,13 @@
 'use client'
 
-import Navigation from "@/components/Navigation"
-import HeroSection from "@/components/HeroSection"
-import GameModesSection from "@/components/GameModesSection"
-import TeamSection from "@/components/TeamSection"
-import VotingSection from "@/components/VotingSection"
-import ShopSection from "@/components/ShopSection"
-import DynmapSection from "@/components/DynmapSection"
-import Footer from "@/components/Footer"
+import Navigation from "../src/components/Navigation"
+import HeroSection from "../src/components/HeroSection"
+import GameModesSection from "../src/components/GameModesSection"
+import TeamSection from "../src/components/TeamSection"
+import VotingSection from "../src/components/VotingSection"
+import ShopSection from "../src/components/ShopSection"
+import DynmapSection from "../src/components/DynmapSection"
+import Footer from "../src/components/Footer"
 import { useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 

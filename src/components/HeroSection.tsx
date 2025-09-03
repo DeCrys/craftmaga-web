@@ -1,9 +1,9 @@
 'use client'
 
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { BackgroundBeamsWithCollision } from "./ui/background-beams-with-collision";
 import { useState, useEffect } from "react";
 import { Server, Users, ExternalLink } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import Image from "next/image";
 import logoImage from "/public/assets/logo.png";
 

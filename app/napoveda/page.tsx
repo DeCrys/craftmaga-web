@@ -1,6 +1,6 @@
 'use client'
 
-import Napoveda from "@/components/Napoveda"
+import Napoveda from "../../src/components/Napoveda"
 
 export const metadata = {
   title: 'Nápověda - CraftMaga',

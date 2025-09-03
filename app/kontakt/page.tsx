@@ -1,6 +1,6 @@
 'use client'
 
-import Kontakt from "@/components/Kontact"
+import Kontakt from "../../src/components/Kontact"
 
 export const metadata = {
   title: 'Kontakt - CraftMaga',
