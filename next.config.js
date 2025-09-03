@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -40,8 +37,6 @@ const nextConfig = {
       },
     ];
   },
-  // Pro Vercel deployment
-  output: 'standalone',
 }
 
 export default nextConfig
