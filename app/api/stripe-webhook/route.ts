@@ -4,7 +4,7 @@ import { grantRank } from '@/lib/mc/grant-rank'
 
 export const runtime = 'nodejs'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-08-27.basil' })
+
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature')
@@ -12,9 +12,17 @@ export async function POST(req: NextRequest) {
 
   const buf = Buffer.from(await req.arrayBuffer())
 
+  const secret = process.env.STRIPE_SECRET_KEY
+  const whSecret = process.env.STRIPE_WEBHOOK_SECRET
+  if (!secret || !whSecret) {
+    console.error('Stripe secrets not configured')
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+  }
+  const stripe = new Stripe(secret)
+
   let event: Stripe.Event
   try {
-    event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+    event = stripe.webhooks.constructEvent(buf, sig, whSecret)
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error('Webhook signature verification failed.', err.message)

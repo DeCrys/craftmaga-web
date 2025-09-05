@@ -2,8 +2,8 @@
 const nextConfig = {
   experimental: {
     serverActions: { allowedOrigins: ['*'] },
-    typedRoutes: false
   },
+  typedRoutes: false,
   typescript: {
     ignoreBuildErrors: true,
   }

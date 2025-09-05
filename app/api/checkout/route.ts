@@ -4,9 +4,6 @@ import { PRICE_MAP } from '@/lib/prices'  // absolute import
 
 export const runtime = 'nodejs'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
-})
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,8 +15,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing username' }, { status: 400 })
     }
 
-    const successUrl = `${process.env.SITE_URL}/success?pkg=${packageId}`
-    const cancelUrl  = `${process.env.SITE_URL}/cancelled`
+    const baseUrl = process.env.SITE_URL || req.nextUrl.origin
+    const successUrl = `${baseUrl}/success?pkg=${packageId}`
+    const cancelUrl  = `${baseUrl}/cancelled`
+
+    const secret = process.env.STRIPE_SECRET_KEY
+    if (!secret) {
+      console.error('STRIPE_SECRET_KEY is not configured')
+      return NextResponse.json({ error: 'Payment configuration missing' }, { status: 500 })
+    }
+    const stripe = new Stripe(secret)
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
