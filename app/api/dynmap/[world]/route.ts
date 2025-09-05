@@ -1,18 +1,34 @@
-// /app/api/dynmap/[world]/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-
-const DYNMAP_BASE = 'http://map.craftmaga.cz:25238'
-
-export async function GET(req: NextRequest, { params }: { params: { world: string } }) {
+// app/api/dynmap-proxy/route.ts
+import { NextResponse } from 'next/server';
+ 
+const DYNMAP_URL = 'http://map.craftmaga.cz:25238';
+ 
+export async function GET(request: Request) {
   try {
-    const world = params.world
-    const res = await fetch(`${DYNMAP_BASE}/up/world/${world}/`)
-    if (!res.ok) return NextResponse.json({ players: [] }, { status: 200 })
-
-    const data = await res.json()
-    return NextResponse.json(data)
-  } catch (err) {
-    console.error('Dynmap API fetch error:', err)
-    return NextResponse.json({ players: [] })
+    const url = new URL(request.url);
+    const apiPath = url.pathname.replace('/api/dynmap-proxy', '');
+    const targetUrl = `${DYNMAP_URL}${apiPath}${url.search}`;
+ 
+    const response = await fetch(targetUrl);
+    
+    if (!response.ok) {
+        throw new Error(`Upstream server responded with status: ${response.status}`);
+    }
+    
+    const headers = new Headers(response.headers);
+    headers.set('Access-Control-Allow-Origin', '*'); 
+ 
+    const data = await response.arrayBuffer();
+ 
+    return new NextResponse(data, {
+      status: response.status,
+      headers: headers,
+    });
+ 
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return new NextResponse('Proxy error: ' + (error as Error).message, {
+      status: 500,
+    });
   }
 }
