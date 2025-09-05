@@ -30,7 +30,7 @@ Otevřete [http://localhost:3000](http://localhost:3000) ve vašem prohlížeči
 
 ## 🏗️ Technologie
 
-- **Next.js 14** - React framework s App Routerem
+- **Next.js 15** - React framework s App Routerem
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first CSS framework
 - **Shadcn/ui** - UI komponenty

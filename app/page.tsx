@@ -1,55 +1,11 @@
-'use client'
+// app/page.tsx
+import { Suspense } from 'react'
+import HomePageContent from './HomePageContent'
 
-import { useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import Navigation from "../components/Navigation"
-import HeroSection from "../components/HeroSection"
-import GameModesSection from "../components/GameModesSection"
-import TeamSection from "../components/TeamSection"
-import VotingSection from "../components/VotingSection"
-import ShopSection from "../components/ShopSection"
-import DynmapSection from "../components/DynmapSection"
-import Footer from "../components/Footer"
-
-export default function HomePageClient() {
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (searchParams) {
-      const scrollTo = searchParams.get('scrollTo')
-      if (scrollTo) {
-        const el = document.getElementById(scrollTo)
-        if (el) {
-          setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 50)
-        }
-      }
-    }
-  }, [searchParams])
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      <Navigation />
-      <main>
-        <section id="domu">
-          <HeroSection />
-        </section>
-        <section id="mody">
-          <GameModesSection />
-        </section>
-        <section id="tym">
-          <TeamSection />
-        </section>
-        <section id="hlasovani">
-          <VotingSection />
-        </section>
-        <section id="shop">
-          <ShopSection />
-        </section>
-        <section id="dynmap">
-          <DynmapSection />
-        </section>
-      </main>
-      <Footer />
-    </div>
+    <Suspense fallback={<div>Načítám...</div>}>
+      <HomePageContent />
+    </Suspense>
   )
 }
