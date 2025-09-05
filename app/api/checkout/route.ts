@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { NextRequest, NextResponse } from 'next/server'
-import { PRICE_MAP } from '../../lib/prices'  // import z lib/prices.ts
+import { PRICE_MAP } from '@/lib/prices'  // absolute import
 
 export const runtime = 'nodejs'
 

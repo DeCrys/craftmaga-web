@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { grantRank } from '../../lib/mc/grant-rank'
+import { grantRank } from '@/lib/mc/grant-rank'
 
 export const runtime = 'nodejs'
 
