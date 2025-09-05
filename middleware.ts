@@ -2,22 +2,26 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const DYNMAP_URL = 'http://map.craftmaga.cz:25238';
+
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
-  
-  // Vytvoříme novou URL pro Dynmap server
-  const dynmapBaseUrl = 'http://map.craftmaga.cz:25238';
 
-  // Zkontrolujeme, jestli cesta začíná na '/dynmap' nebo na '/up'
-  if (url.pathname.startsWith('/dynmap') || url.pathname.startsWith('/up')) {
-    // Přepíše celou URL tak, aby směřovala na server Dynmapy
-    const rewriteUrl = new URL(url.pathname, dynmapBaseUrl);
-    return NextResponse.rewrite(rewriteUrl);
+  // Přesměruje všechny požadavky, které začínají na /up/, na Dynmap server.
+  if (url.pathname.startsWith('/up/')) {
+    const newUrl = new URL(url.pathname, DYNMAP_URL);
+    return NextResponse.rewrite(newUrl);
+  }
+
+  // Přesměruje hlavní stránku mapy, pokud je volána přes /dynmap
+  if (url.pathname.startsWith('/dynmap')) {
+    const newUrl = new URL(url.pathname, DYNMAP_URL);
+    return NextResponse.rewrite(newUrl);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/dynmap/:path*', '/up/:path*'],
+  matcher: ['/up/:path*', '/dynmap/:path*'],
 };
