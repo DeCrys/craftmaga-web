@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/api/dyn-map/:path*",
-      "destination": "/api/proxy"
+      "source": "/dynmap/:path*",
+      "destination": "http://map.craftmaga.cz:25238/:path*"
+    },
+    {
+      "source": "/up/:path*",
+      "destination": "http://map.craftmaga.cz:25238/up/:path*"
     }
   ]
 }
