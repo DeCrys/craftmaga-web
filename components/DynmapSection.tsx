@@ -113,7 +113,7 @@ const DynmapSection = () => {
             <div className="card-glass relative overflow-hidden group">
               <div className="relative h-96 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-lg overflow-hidden">
                 <iframe
-                  src={`/api/dynmap-proxy/?worldname=${currentWorld}&mapname=flat&zoom=4&x=${mapCenter.x}&y=${mapCenter.y}&z=${mapCenter.z}`}
+                  src={`/dynmap?worldname=${currentWorld}&mapname=flat&zoom=4&x=${mapCenter.x}&y=${mapCenter.y}&z=${mapCenter.z}`}
                   className="w-full h-full border-0 rounded-lg"
                   title="Dynmap"
                 />
