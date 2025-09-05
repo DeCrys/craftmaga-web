@@ -112,6 +112,7 @@ const DynmapSection = () => {
           <div className="lg:col-span-2">
             <div className="card-glass relative overflow-hidden group">
               <div className="relative h-96 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-lg overflow-hidden">
+                // DynmapSection.tsx
                 <iframe
                   src={`/dynmap?worldname=${currentWorld}&mapname=flat&zoom=4&x=${mapCenter.x}&y=${mapCenter.y}&z=${mapCenter.z}`}
                   className="w-full h-full border-0 rounded-lg"
