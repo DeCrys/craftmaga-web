@@ -1,11 +1,18 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { metadata } from '@/lib/metadata' // jen import, ne export
+import { metadata } from '../lib/metadata'
+import { ClientProviders } from '../components/ClientProviders'
+
+export { metadata }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="cs">
-      <body>{children}</body>
+      <body>
+        <ClientProviders>
+          {children}
+        </ClientProviders>
+      </body>
     </html>
   )
 }
