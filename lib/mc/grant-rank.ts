@@ -125,15 +125,11 @@ export async function grantRank(username: string, pkgName: string) {
     const notifications = [
       {
         name: "Personal message",
-        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl vám udělen rank ${rank.toUpperCase()}! 🎉 Děkujeme za podporu CraftMaga serveru!","color":"dark_purple","bold":true}`
+        cmd: `tellraw ${username} {"text":"🎉 Parádá zakoupil jsi rank ${rank.toUpperCase()}! po dobu 30 dní 🎉 Děkujeme za podporu","color":"dark_purple","bold":true}`
       },
       { 
         name: "Title screen",
         cmd: `title ${username} title {"text":"🎉 Zakoupil rank ${rank.toUpperCase()}! 🎉","color":"dark_purple","bold":true}`
-      },
-      {
-        name: "Subtitle",
-        cmd: `title ${username} subtitle {"text":"${rank.toUpperCase()} - Aktivní po dobu 30 dní!","color":"dark_purple"}`
       },
       {
         name: "Broadcast to all",
