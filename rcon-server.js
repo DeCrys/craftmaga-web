@@ -1,7 +1,7 @@
 import { Rcon } from 'rcon-client';
 
 // Nastavení podle tvého serveru
-const RCON_HOST = 'play.craftmaga.cz'; // nebo veřejná IP
+const RCON_HOST = '178.63.161.182'; // nebo veřejná IP
 const RCON_PORT = 25575;
 const RCON_PASSWORD = '15041986';
 
@@ -27,4 +27,5 @@ export async function isPlayerOnline(playerName: string): Promise<boolean> {
     if (rcon) await rcon.end();
   }
 }
+
 
