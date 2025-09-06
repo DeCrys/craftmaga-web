@@ -1,12 +1,16 @@
 {
   "rewrites": [
     {
-      "source": "/dynmap/:path*",
-      "destination": "http://map.craftmaga.cz:25238/:path*"
+      "source": "/mapa",
+      "destination": "http://map.craftmaga.cz:25238"
     },
     {
       "source": "/up/:path*",
       "destination": "http://map.craftmaga.cz:25238/up/:path*"
+    },
+    {
+      "source": "/standalone/dynmap_config.json",
+      "destination": "http://map.craftmaga.cz:25238/standalone/dynmap_config.json"
     }
   ]
 }
