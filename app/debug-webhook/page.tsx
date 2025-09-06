@@ -38,7 +38,7 @@ export default function DebugWebhookPage() {
               <div>
                 <div className="inline-block px-2 py-1 bg-muted rounded text-sm font-medium mb-2">Webhook URL</div>
                 <p className="p-2 bg-muted rounded font-mono text-sm">
-                  {typeof window !== 'undefined' ? `${window.location.origin}/api/stripe-webhook` : 'Loading...'}
+                  {typeof window !== 'undefined' ? `${window.location.origin}/api/webhook` : 'Loading...'}
                 </p>
               </div>
               
@@ -68,11 +68,11 @@ export default function DebugWebhookPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-sm space-y-2">
-                <h3 className="font-semibold">1. Zkontrolujte Stripe Webhook nastavení:</h3>
+                <h3 className="font-semibold">1. Zkontrolujte Webhook nastavení:</h3>
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Přihlaste se do Stripe Dashboard</li>
                   <li>Jděte na Developers → Webhooks</li>
-                  <li>Přidejte webhook endpoint: <code className="bg-muted px-1 rounded">{typeof window !== 'undefined' ? `${window.location.origin}/api/stripe-webhook` : 'Loading...'}</code></li>
+                  <li>Přidejte webhook endpoint: <code className="bg-muted px-1 rounded">{typeof window !== 'undefined' ? `${window.location.origin}/api/webhook` : 'Loading...'}</code></li>
                   <li>Vyberte událost: <code className="bg-muted px-1 rounded">checkout.session.completed</code></li>
                   <li>Zkopírujte webhook signing secret do .env jako STRIPE_WEBHOOK_SECRET</li>
                 </ul>
