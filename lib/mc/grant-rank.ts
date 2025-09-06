@@ -125,7 +125,7 @@ export async function grantRank(username: string, pkgName: string) {
     const notifications = [
       {
         name: "Personal message",
-        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl ti udělen rank ","color":"gold","bold":true,"extra":[{"text":"${coloredRankName}","color":"${rankColor.color}","bold":true},{"text":"!\\n💎 Děkujeme za podporu CraftMaga serveru!","color":"gold","bold":true}]}`
+        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl vám udělen rank ","color":"gold","bold":true,"extra":[{"text":"${coloredRankName}","color":"${rankColor.color}","bold":true},{"text":"!\\n💎 Děkujeme za podporu CraftMaga serveru!","color":"gold","bold":true}]}`
       },
       {
         name: "Title screen",
@@ -146,15 +146,24 @@ export async function grantRank(username: string, pkgName: string) {
     for (const notification of notifications) {
       try {
         console.log(`[GRANT-RANK] Sending ${notification.name}...`)
+        console.log(`[GRANT-RANK] Command: ${notification.cmd}`)
+        
         const notifRes = await rcon.send(notification.cmd)
-        console.log(`[GRANT-RANK] ✅ ${notification.name} sent: "${notifRes}"`)
+        console.log(`[GRANT-RANK] ✅ ${notification.name} sent successfully`)
+        console.log(`[GRANT-RANK] Server response: "${notifRes}"`)
         
         // Small delay between notifications
-        await new Promise(resolve => setTimeout(resolve, 200))
+        await new Promise(resolve => setTimeout(resolve, 300))
         
       } catch (msgErr) {
-        console.error(`[GRANT-RANK] ⚠️  Failed to send ${notification.name}:`, msgErr)
-        // Continue with other notifications - don't stop the process
+        console.error(`[GRANT-RANK] ❌ Failed to send ${notification.name}:`, msgErr)
+        
+        if (msgErr instanceof Error) {
+          console.error(`[GRANT-RANK] Error message: ${msgErr.message}`)
+          console.error(`[GRANT-RANK] Error name: ${msgErr.name}`)
+        }
+        
+        // Continue with other notifications
       }
     }
     
