@@ -1,4 +1,3 @@
-import { Rcon } from 'rcon-client'
 
 export async function grantRank(username: string, pkgName: string) {
   console.log(`[GRANT-RANK] Starting grant for user: ${username}, package: ${pkgName}`)
