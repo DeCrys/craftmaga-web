@@ -137,7 +137,7 @@ export async function grantRank(username: string, pkgName: string) {
       },
       {
         name: "Broadcast to all",
-        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zrovna koupil rank ${rankColor.code}§l${coloredRankName}§6§l! Děkujeme za podporu! §e💎`
+        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank ${rankColor.code}§l${coloredRankName}§6§l! Děkujeme za podporu! §e💎`
       }
     ]
     
@@ -146,24 +146,15 @@ export async function grantRank(username: string, pkgName: string) {
     for (const notification of notifications) {
       try {
         console.log(`[GRANT-RANK] Sending ${notification.name}...`)
-        console.log(`[GRANT-RANK] Command: ${notification.cmd}`)
-        
         const notifRes = await rcon.send(notification.cmd)
-        console.log(`[GRANT-RANK] ✅ ${notification.name} sent successfully`)
-        console.log(`[GRANT-RANK] Server response: "${notifRes}"`)
+        console.log(`[GRANT-RANK] ✅ ${notification.name} sent: "${notifRes}"`)
         
         // Small delay between notifications
-        await new Promise(resolve => setTimeout(resolve, 300))
+        await new Promise(resolve => setTimeout(resolve, 200))
         
       } catch (msgErr) {
-        console.error(`[GRANT-RANK] ❌ Failed to send ${notification.name}:`, msgErr)
-        
-        if (msgErr instanceof Error) {
-          console.error(`[GRANT-RANK] Error message: ${msgErr.message}`)
-          console.error(`[GRANT-RANK] Error name: ${msgErr.name}`)
-        }
-        
-        // Continue with other notifications
+        console.error(`[GRANT-RANK] ⚠️  Failed to send ${notification.name}:`, msgErr)
+        // Continue with other notifications - don't stop the process
       }
     }
     
