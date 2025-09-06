@@ -1,63 +1,34 @@
-<<<<<<< HEAD
-import { Rcon } from 'rcon-client';
+import { Rcon } from 'rcon-client'
 
-// Nastavení podle tvého serveru
-const RCON_HOST = 'play.craftmaga.cz'; // nebo veřejná IP
-const RCON_PORT = 25575;
-const RCON_PASSWORD = '15041986';
+export async function grantRank(username: string, pkgName: string) {
+  const host = process.env.RCON_HOST!
+  const port = Number(process.env.RCON_PORT!)
+  const password = process.env.RCON_PASSWORD!
 
-export async function isPlayerOnline(playerName: string): Promise<boolean> {
-  let rcon: Rcon | null = null;
+  const rankMap: Record<string, string> = {
+    'VIP Rank': 'vip',
+    'LEGEND Rank': 'legend',
+    'ULTRA Rank': 'ultra',
+    'GOD Rank': 'god',
+    'IMMORTAL Rank': 'immortal',
+  }
+
+  const rank = rankMap[pkgName]
+  if (!rank) {
+    console.error(`[GRANT-RANK] Unknown package: ${pkgName}`)
+    return
+  }
+
+  const rcon = await Rcon.connect({ host, port, password })
 
   try {
-    rcon = await Rcon.connect({
-      host: RCON_HOST,
-      port: RCON_PORT,
-      password: RCON_PASSWORD,
-    });
-
-    // Minecraft příkaz pro ověření hráče
-    const response = await rcon.send(`list`);
-    // response vypadá např.: "There are 1/20 players online: CD250"
-    const onlinePlayers = response.split(':')[1]?.split(',').map(p => p.trim()) || [];
-    return onlinePlayers.includes(playerName);
+    const duration = '30d'
+    const cmd = `lp user ${username} parent addtemp ${rank} ${duration}`
+    const res = await rcon.send(cmd)
+    console.log(`[GRANT-RANK] Executed: "${cmd}" ->`, res)
   } catch (err) {
-    console.error('Chyba RCON:', err);
-    return false;
+    console.error('[RCON ERROR]', err)
   } finally {
-    if (rcon) await rcon.end();
+    await rcon.end()
   }
 }
-
-=======
-import { Rcon } from 'rcon-client';
-
-// Nastavení podle tvého serveru
-const RCON_HOST = 'play.craftmaga.cz'; // nebo veřejná IP
-const RCON_PORT = 25575;
-const RCON_PASSWORD = '15041986';
-
-export async function isPlayerOnline(playerName: string): Promise<boolean> {
-  let rcon: Rcon | null = null;
-
-  try {
-    rcon = await Rcon.connect({
-      host: RCON_HOST,
-      port: RCON_PORT,
-      password: RCON_PASSWORD,
-    });
-
-    // Minecraft příkaz pro ověření hráče
-    const response = await rcon.send(`list`);
-    // response vypadá např.: "There are 1/20 players online: CD250"
-    const onlinePlayers = response.split(':')[1]?.split(',').map(p => p.trim()) || [];
-    return onlinePlayers.includes(playerName);
-  } catch (err) {
-    console.error('Chyba RCON:', err);
-    return false;
-  } finally {
-    if (rcon) await rcon.end();
-  }
-}
-
->>>>>>> 06c0f705e1c42ecc1c0471609af2b8fe62e03c24
