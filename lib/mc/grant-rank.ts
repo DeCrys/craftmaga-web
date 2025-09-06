@@ -93,6 +93,18 @@ export async function grantRank(username: string, pkgName: string) {
   
   console.log(`[GRANT-RANK] ✅ Successfully mapped "${pkgName}" -> "${rank}"`)
   
+  // --- Změna začíná zde ---
+  const rankColors: Record<string, string> = {
+    'vip': 'green',
+    'legend': 'gold',
+    'ultra': 'dark_purple',
+    'god': 'red',
+    'immortal': 'blue'
+  }
+  
+  const rankColor = rankColors[rank] || 'white'
+  // --- Změna končí zde ---
+  
   try {
     console.log(`[GRANT-RANK] ========== RCON CONNECTION ==========`)
     console.log(`[GRANT-RANK] Connecting to ${host}:${port}...`)
@@ -122,20 +134,22 @@ export async function grantRank(username: string, pkgName: string) {
     console.log(`[GRANT-RANK] Server response: "${res}"`)
     
     // Send multiple notifications
+    // --- Změna začíná zde ---
     const notifications = [
       {
         name: "Personal message",
-        cmd: `tellraw ${username} {"text":"🎉 Parádá zakoupil jsi rank ${rank.toUpperCase()}! po dobu 30 dní 🎉 Děkujeme za podporu","color":"dark_purple","bold":true}`
+        cmd: `tellraw ${username} {"text":"🎉 Parádá zakoupil jsi rank ","color":"dark_purple","bold":true},{"text":"${rank.toUpperCase()}!","color":"${rankColor}","bold":true},{"text":" po dobu 30 dní 🎉 Děkujeme za podporu","color":"dark_purple","bold":true}`
       },
       { 
         name: "Title screen",
-        cmd: `title ${username} title {"text":"🎉 Zakoupil rank ${rank.toUpperCase()}! 🎉","color":"dark_purple","bold":true}`
+        cmd: `title ${username} title {"text":"🎉 Zakoupil rank ","color":"dark_purple","bold":true},{"text":"${rank.toUpperCase()}!","color":"${rankColor}","bold":true},{"text":" 🎉","color":"dark_purple","bold":true}`
       },
       {
         name: "Broadcast to all",
-        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §a§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §6§l🎉`
+        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §${rank === 'vip' ? 'a' : (rank === 'legend' ? 'e' : (rank === 'ultra' ? '5' : (rank === 'god' ? 'c' : 'b')))}§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §6§l🎉`
       }
     ]
+    // --- Změna končí zde ---
     
     console.log(`[GRANT-RANK] ========== SENDING NOTIFICATIONS ==========`)
     
