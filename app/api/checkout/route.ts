@@ -1,16 +1,17 @@
 import Stripe from 'stripe'
 import { NextRequest, NextResponse } from 'next/server'
-import { PRICE_MAP } from '@/lib/prices'  // absolute import
+import { PRICE_MAP } from '@/lib/prices'
 
 export const runtime = 'nodejs'
-
 
 export async function POST(req: NextRequest) {
   try {
     const { packageId, username } = await req.json()
 
     const product = PRICE_MAP[packageId as string]
-    if (!product) return NextResponse.json({ error: 'Unknown package' }, { status: 400 })
+    if (!product) {
+      return NextResponse.json({ error: 'Unknown package' }, { status: 400 })
+    }
     if (!username || typeof username !== 'string') {
       return NextResponse.json({ error: 'Missing username' }, { status: 400 })
     }
@@ -35,7 +36,10 @@ export async function POST(req: NextRequest) {
         {
           price_data: {
             currency: 'czk',
-            product_data: { name: product.name, description: product.description },
+            product_data: {
+              name: product.name,
+              description: product.description,
+            },
             unit_amount: product.amountCZK * 100,
           },
           quantity: 1,
@@ -44,7 +48,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         packageId,
         username,
-        rank: product.rank,
+        pkgName: product.rank, // sjednocený klíč, sedí s webhookem
       },
     })
 
