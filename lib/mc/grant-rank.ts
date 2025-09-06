@@ -121,6 +121,43 @@ export async function grantRank(username: string, pkgName: string) {
     console.log(`[GRANT-RANK] ✅ Command executed successfully in ${cmdTime}ms`)
     console.log(`[GRANT-RANK] Server response: "${res}"`)
     
+    // Send multiple notifications
+    const notifications = [
+      {
+        name: "Personal message",
+        cmd: `tellraw ${username} {"text":"🎉 Parádá! Byl zakoupil jsis rank ${rank.toUpperCase()}!\\n💎 Děkujeme za podporu CraftMaga serveru!","color":"gold","bold":true}`
+      },
+      {
+        name: "Title screen",
+        cmd: `title ${username} title {"text":"🎉 NOVÝ RANK!","color":"gold","bold":true}`
+      },
+      {
+        name: "Subtitle",
+        cmd: `title ${username} subtitle {"text":"${rank.toUpperCase()} - Aktivní po dobu 30 dní!","color":"yellow"}`
+      },
+      {
+        name: "Broadcast to all",
+        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §a§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §e💎`
+      }
+    ]
+    
+    console.log(`[GRANT-RANK] ========== SENDING NOTIFICATIONS ==========`)
+    
+    for (const notification of notifications) {
+      try {
+        console.log(`[GRANT-RANK] Sending ${notification.name}...`)
+        const notifRes = await rcon.send(notification.cmd)
+        console.log(`[GRANT-RANK] ✅ ${notification.name} sent: "${notifRes}"`)
+        
+        // Small delay between notifications
+        await new Promise(resolve => setTimeout(resolve, 200))
+        
+      } catch (msgErr) {
+        console.error(`[GRANT-RANK] ⚠️  Failed to send ${notification.name}:`, msgErr)
+        // Continue with other notifications - don't stop the process
+      }
+    }
+    
     await rcon.end()
     console.log(`[GRANT-RANK] 🔐 RCON connection closed`)
     console.log(`[GRANT-RANK] ========== SUCCESS ==========`)
