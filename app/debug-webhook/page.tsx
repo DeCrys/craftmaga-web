@@ -9,7 +9,7 @@ export default function DebugWebhookPage() {
   
   const testWebhookEndpoint = () => {
     // Test dostupnosti webhook endpointu
-    fetch('/api/stripe-webhook', {
+    fetch('/api/webhook', {
       method: 'GET',
     })
     .then(res => {
