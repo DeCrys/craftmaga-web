@@ -12,9 +12,8 @@ export async function isPlayerOnline(playerName: string): Promise<boolean> {
       password: RCON_PASSWORD,
     });
 
-    // Minecraft příkaz pro ověření hráče
     const response = await rcon.send(`list`);
-    // response vypadá např.: "There are 1/20 players online: CD250"
+    // response např.: "There are 1/20 players online: CD250"
     const onlinePlayers = response.split(':')[1]?.split(',').map(p => p.trim()) || [];
     return onlinePlayers.includes(playerName);
   } catch (err) {
@@ -23,15 +22,16 @@ export async function isPlayerOnline(playerName: string): Promise<boolean> {
   } finally {
     if (rcon) await rcon.end();
   }
+}
 
-
-  if (!password) {
+// funkce na grant ranku
+export async function grantRank({ username, pkgName }: GrantArgs): Promise<void> {
+  if (!RCON_PASSWORD) {
     console.warn('[GRANT-RANK] Missing RCON_PASSWORD, skipping actual grant.')
     console.log(`[GRANT-RANK] Would grant temporary rank for user=${username} (pkg=${pkgName})`)
     return
   }
 
-  // Mapování názvu balíčku na LuckPerms rank (malými písmeny podle serveru)
   const rankMap: Record<string, string> = {
     'VIP Rank': 'vip',
     'LEGEND Rank': 'legend',
@@ -47,12 +47,15 @@ export async function isPlayerOnline(playerName: string): Promise<boolean> {
     return
   }
 
-  console.log(`[GRANT-RANK] Connecting to RCON ${host}:${port}`)
+  console.log(`[GRANT-RANK] Connecting to RCON ${RCON_HOST}:${RCON_PORT}`)
 
-  const rcon = await Rcon.connect({ host, port, password })
+  const rcon = await Rcon.connect({
+    host: RCON_HOST,
+    port: RCON_PORT,
+    password: RCON_PASSWORD,
+  })
 
   try {
-    // LuckPerms: add parent group temporarily na 30 dní
     const duration = '30d'
     const cmd = `lp user ${username} parent addtemp ${rank} ${duration}`
     const res = await rcon.send(cmd)
