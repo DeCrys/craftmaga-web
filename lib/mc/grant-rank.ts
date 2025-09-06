@@ -3,9 +3,9 @@ import { Rcon } from 'rcon-client'
 type GrantArgs = { packageId: string; username: string; pkgName: string }
 
 export async function grantRank({ packageId, username, pkgName }: GrantArgs) {
-  const host = process.env.RCON_HOST || '127.0.0.1'
+  const host = process.env.RCON_HOST || 'play.craftmaga.cz'
   const port = Number(process.env.RCON_PORT || '25575')
-  const password = process.env.RCON_PASSWORD || ''
+  const password = process.env.RCON_PASSWORD || '15041986'
 
   if (!password) {
     console.warn('[GRANT-RANK] Missing RCON_PASSWORD, skipping actual grant.')
