@@ -3,7 +3,7 @@ import { Rcon } from 'rcon-client'
 type GrantArgs = { packageId: string; username: string; pkgName: string }
 
 export async function grantRank({ packageId, username, pkgName }: GrantArgs) {
-  const host = process.env.RCON_HOST || 'play.craftmaga.cz'
+  const host = process.env.RCON_HOST || '178.63.161.182'
   const port = Number(process.env.RCON_PORT || '25575')
   const password = process.env.RCON_PASSWORD || '15041986'
 
