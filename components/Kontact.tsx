@@ -5,7 +5,7 @@ import { Textarea } from "./ui/textarea";
 import { Card, CardContent } from "./ui/card";
 import Navigation from "./Navigation"; // tvoje navigace
 import { Heart, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import logoImage from "../public/assets/logo.png";
 
 const Contact = () => {
@@ -138,7 +138,7 @@ const Contact = () => {
                     </a>
                   ) : (
                     <Link
-                      to={link.href}
+                      href={link.href}
                       className="text-foreground/70 hover:text-primary transition-colors text-sm inline-flex items-center gap-1"
                     >
                       {link.label}

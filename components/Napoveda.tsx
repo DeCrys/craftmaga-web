@@ -2,7 +2,7 @@
 import React from "react";
 import Navigation from "@/components/Navigation"; // tvůj resizable navbar
 import { Heart, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import logoImage from "@/assets/logo.png";
 
 const Napoveda = () => {
@@ -98,7 +98,7 @@ const Napoveda = () => {
                     </a>
                   ) : (
                     <Link
-                      to={link.href}
+                      href={link.href}
                       className="text-foreground/70 hover:text-primary transition-colors text-sm inline-flex items-center gap-1"
                     >
                       {link.label}

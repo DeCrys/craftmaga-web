@@ -32,17 +32,33 @@ export async function POST(req: NextRequest) {
   try {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session
+      
+      console.log('[WEBHOOK] Session data:', JSON.stringify(session, null, 2))
 
       const packageId = session.metadata?.packageId
       const username  = session.metadata?.username
       const pkgName   = session.metadata?.pkgName
 
+      console.log('[WEBHOOK] Extracted metadata:', { packageId, username, pkgName, payment_status: session.payment_status })
+
       if (session.payment_status === 'paid' && packageId && username && pkgName) {
         console.log(`[WEBHOOK] Granting ${pkgName} to ${username}`)
-        await grantRank({ packageId, username, pkgName })
+        try {
+          await grantRank(username, pkgName)
+          console.log(`[WEBHOOK] Successfully granted ${pkgName} to ${username}`)
+        } catch (grantError) {
+          console.error('[WEBHOOK] Error granting rank:', grantError)
+        }
       } else {
-        console.warn('[WEBHOOK] Missing metadata or not paid')
+        console.warn('[WEBHOOK] Missing metadata or not paid:', {
+          payment_status: session.payment_status,
+          has_packageId: !!packageId,
+          has_username: !!username,
+          has_pkgName: !!pkgName
+        })
       }
+    } else {
+      console.log(`[WEBHOOK] Received event type: ${event.type}`)
     }
 
     return NextResponse.json({ received: true }, { status: 200 })
