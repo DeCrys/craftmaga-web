@@ -125,19 +125,19 @@ export async function grantRank(username: string, pkgName: string) {
     const notifications = [
       {
         name: "Personal message",
-        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl vám udělen rank ","color":"gold","bold":true,"extra":[{"text":"${coloredRankName}","color":"${rankColor.color}","bold":true},{"text":"!\\n💎 Děkujeme za podporu CraftMaga serveru!","color":"gold","bold":true}]}`
+        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl vám udělen rank ${rank.toUpperCase()}!\\n💎 Děkujeme za podporu CraftMaga serveru!","color":"dark_purple","bold":true}`
       },
       {
         name: "Title screen",
-        cmd: `title ${username} title {"text":"🎉 NOVÝ RANK!","color":"gold","bold":true}`
+        cmd: `title ${username} title {"text":"🎉 Zakoupil rank ${rank.toUpperCase()}!\\n💎","color":"dark_purple","bold":true}`
       },
       {
         name: "Subtitle",
-        cmd: `title ${username} subtitle {"text":"${coloredRankName} - Aktivní po dobu 30 dní!","color":"${rankColor.color}","bold":true}`
+        cmd: `title ${username} subtitle {"text":"${rank.toUpperCase()} - Aktivní po dobu 30 dní!","color":"dark_purple"}`
       },
       {
         name: "Broadcast to all",
-        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank ${rankColor.code}§l${coloredRankName}§6§l! Děkujeme za podporu! §e💎`
+        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §a§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §e💎`
       }
     ]
     
