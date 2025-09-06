@@ -125,11 +125,11 @@ export async function grantRank(username: string, pkgName: string) {
     const notifications = [
       {
         name: "Personal message",
-        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl vám udělen rank ${rank.toUpperCase()}!\\n💎 Děkujeme za podporu CraftMaga serveru!","color":"dark_purple","bold":true}`
+        cmd: `tellraw ${username} {"text":"🎉 Gratulujeme! Byl vám udělen rank ${rank.toUpperCase()}! 🎉 Děkujeme za podporu CraftMaga serveru!","color":"dark_purple","bold":true}`
       },
-      {
+      { 
         name: "Title screen",
-        cmd: `title ${username} title {"text":"🎉 Zakoupil rank ${rank.toUpperCase()}!\\n💎","color":"dark_purple","bold":true}`
+        cmd: `title ${username} title {"text":"🎉 Zakoupil rank ${rank.toUpperCase()}! 🎉","color":"dark_purple","bold":true}`
       },
       {
         name: "Subtitle",
@@ -137,7 +137,7 @@ export async function grantRank(username: string, pkgName: string) {
       },
       {
         name: "Broadcast to all",
-        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §a§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §e💎`
+        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §a§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §6§l🎉`
       }
     ]
     
