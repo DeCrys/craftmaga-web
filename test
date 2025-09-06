@@ -1,0 +1,19 @@
+# === Stripe ===
+# STRIPE_SECRET_KEY=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         # nahraď svým testovacím klíčem ze Stripe
+# STRIPE_WEBHOOK_SECRET=whsec_lbQd3w990v2IIZiGy6ene8fJv3VZ71Dr      # nahraď tajným klíčem webhooku ze Stripe
+
+
+STRIPE_SECRET_KEY=sk_test_51R25NSGE8eLaxjtdd77udTawociCr4wC1jFowvp4Qd5JErhQgLFfAgYFKgoAQ17EA5xcaWpkjmw9vJbWClgW6hvX00YJqMFCpb
+STRIPE_WEBHOOK_SECRET=whsec_lbQd3w990v2IIZiGy6ene8fJv3VZ71Dr
+# === Web ===
+# SITE_URL=http://localhost:3000          # při lokálním testu
+SITE_URL=https://craftmaga.cz  # odkomentuj při nasazení na produkci
+
+# === Další nastavení (pokud bys chtěl přidat) ===
+# Můžeš sem přidat další tajné klíče nebo API tokeny pro budoucí pluginy
+STRIPE_API_VERSION=2025-08-27.basil
+
+# RCON připojení
+RCON_HOST=play.craftmaga.cz
+RCON_PORT=25575
+RCON_PASSWORD=15041986
