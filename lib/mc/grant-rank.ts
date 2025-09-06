@@ -2,187 +2,88 @@ import { Rcon } from 'rcon-client'
 
 export async function grantRank(username: string, pkgName: string) {
   console.log(`[GRANT-RANK] ========== STARTING GRANT ==========`)
-  console.log(`[GRANT-RANK] Timestamp: ${new Date().toISOString()}`)
-  console.log(`[GRANT-RANK] Input user: "${username}" (type: ${typeof username}, length: ${username?.length || 'N/A'})`)
-  console.log(`[GRANT-RANK] Input package: "${pkgName}" (type: ${typeof pkgName}, length: ${pkgName?.length || 'N/A'})`)
-  
-  // Check for hidden characters in inputs
-  console.log(`[GRANT-RANK] Username hex: ${Buffer.from(username || '').toString('hex')}`)
-  console.log(`[GRANT-RANK] Package hex: ${Buffer.from(pkgName || '').toString('hex')}`)
-  
+
   const host = process.env.RCON_HOST!
   const port = Number(process.env.RCON_PORT!)
   const password = process.env.RCON_PASSWORD!
-  
-  console.log(`[GRANT-RANK] ========== ENVIRONMENT ==========`)
-  console.log(`[GRANT-RANK] RCON_HOST: ${host || 'MISSING'}`)
-  console.log(`[GRANT-RANK] RCON_PORT: ${port || 'MISSING'}`)
-  console.log(`[GRANT-RANK] RCON_PASSWORD: ${password ? 'SET (length: ' + password.length + ')' : 'MISSING'}`)
-  
-  // Enhanced rank mapping with multiple variations
+
   const rankMap: Record<string, string> = {
-    // Original names
     'VIP Rank': 'vip',
     'LEGEND Rank': 'legend',
     'ULTRA Rank': 'ultra',
     'GOD Rank': 'god',
     'IMMORTAL Rank': 'immortal',
-    
-    // Without "Rank" suffix
     'VIP': 'vip',
     'LEGEND': 'legend',
     'ULTRA': 'ultra',
     'GOD': 'god',
     'IMMORTAL': 'immortal',
-    
-    // Lowercase versions
-    'vip rank': 'vip',
-    'legend rank': 'legend',
-    'ultra rank': 'ultra',
-    'god rank': 'god',
-    'immortal rank': 'immortal',
-    
     'vip': 'vip',
     'legend': 'legend',
     'ultra': 'ultra',
     'god': 'god',
-    'immortal': 'immortal',
-    
-    // Mixed case versions
-    'Vip Rank': 'vip',
-    'Legend Rank': 'legend',
-    'Ultra Rank': 'ultra',
-    'God Rank': 'god',
-    'Immortal Rank': 'immortal',
-    
-    'Vip': 'vip',
-    'Legend': 'legend',
-    'Ultra': 'ultra',
-    'God': 'god',
-    'Immortal': 'immortal'
+    'immortal': 'immortal'
   }
-  
-  console.log(`[GRANT-RANK] ========== PACKAGE MAPPING ==========`)
-  console.log(`[GRANT-RANK] Available packages:`, Object.keys(rankMap))
-  
-  // Try exact match first
-  let rank = rankMap[pkgName]
-  console.log(`[GRANT-RANK] Exact match for "${pkgName}": ${rank || 'NOT FOUND'}`)
-  
-  // If no exact match, try trimmed version
-  if (!rank && pkgName) {
-    const trimmedPkg = pkgName.trim()
-    rank = rankMap[trimmedPkg]
-    console.log(`[GRANT-RANK] Trimmed match for "${trimmedPkg}": ${rank || 'NOT FOUND'}`)
+
+  const colorMap: Record<string, string> = {
+    vip: "green",         // tellraw/title JSON barva
+    legend: "gold",
+    ultra: "dark_purple",
+    god: "red",
+    immortal: "blue"
   }
-  
-  // If still no match, try case-insensitive
-  if (!rank && pkgName) {
-    const lowerPkg = pkgName.toLowerCase().trim()
-    rank = rankMap[lowerPkg]
-    console.log(`[GRANT-RANK] Lowercase match for "${lowerPkg}": ${rank || 'NOT FOUND'}`)
+
+  const legacyMap: Record<string, string> = {
+    vip: "§a",        // 🟢 zelená
+    legend: "§6",     // 🟡 zlatá
+    ultra: "§5",      // 🟣 fialová
+    god: "§c",        // 🔴 červená
+    immortal: "§9"    // 🔵 modrá
   }
-  
+
+  let rank = rankMap[pkgName] || rankMap[pkgName?.trim()?.toLowerCase()]
   if (!rank) {
     console.error(`[GRANT-RANK] ❌ Unknown package: "${pkgName}"`)
-    console.error(`[GRANT-RANK] Package not found in any variation`)
-    console.error(`[GRANT-RANK] Available packages:`, Object.keys(rankMap))
-    console.error(`[GRANT-RANK] ========== FAILED - UNKNOWN PACKAGE ==========`)
     return
   }
-  
-  console.log(`[GRANT-RANK] ✅ Successfully mapped "${pkgName}" -> "${rank}"`)
-  
-  // --- Změna začíná zde ---
-  const rankColors: Record<string, string> = {
-    'vip': 'green',
-    'legend': 'gold',
-    'ultra': 'dark_purple',
-    'god': 'red',
-    'immortal': 'blue'
-  }
-  
-  const rankColor = rankColors[rank] || 'white'
-  // --- Změna končí zde ---
-  
+
+  const color = colorMap[rank] || "white"
+  const legacy = legacyMap[rank] || "§f"
+
   try {
-    console.log(`[GRANT-RANK] ========== RCON CONNECTION ==========`)
-    console.log(`[GRANT-RANK] Connecting to ${host}:${port}...`)
-    
-    const startTime = Date.now()
-    const rcon = await Rcon.connect({ 
-      host, 
-      port, 
-      password,
-      timeout: 10000
-    })
-    
-    const connectTime = Date.now() - startTime
-    console.log(`[GRANT-RANK] ✅ RCON connected successfully in ${connectTime}ms`)
-    
+    const rcon = await Rcon.connect({ host, port, password, timeout: 10000 })
+
     const duration = '30d'
     const cmd = `lp user ${username} parent addtemp ${rank} ${duration}`
-    
-    console.log(`[GRANT-RANK] ========== COMMAND EXECUTION ==========`)
-    console.log(`[GRANT-RANK] Executing command: "${cmd}"`)
-    
-    const cmdStartTime = Date.now()
-    const res = await rcon.send(cmd)
-    const cmdTime = Date.now() - cmdStartTime
-    
-    console.log(`[GRANT-RANK] ✅ Command executed successfully in ${cmdTime}ms`)
-    console.log(`[GRANT-RANK] Server response: "${res}"`)
-    
-    // Send multiple notifications
-    // --- Změna začíná zde ---
+    await rcon.send(cmd)
+
     const notifications = [
       {
         name: "Personal message",
-        cmd: `tellraw ${username} {"text":"🎉 Parádá zakoupil jsi rank ","color":"dark_purple","bold":true},{"text":"${rank.toUpperCase()}!","color":"${rankColor}","bold":true},{"text":" po dobu 30 dní 🎉 Děkujeme za podporu","color":"dark_purple","bold":true}`
+        cmd: `tellraw ${username} {"text":"🎉 Zakoupil jsi rank ${rank.toUpperCase()} na 30 dní 🎉 Děkujeme!","color":"${color}","bold":true}`
       },
-      { 
+      {
         name: "Title screen",
-        cmd: `title ${username} title {"text":"🎉 Zakoupil rank ","color":"dark_purple","bold":true},{"text":"${rank.toUpperCase()}!","color":"${rankColor}","bold":true},{"text":" 🎉","color":"dark_purple","bold":true}`
+        cmd: `title ${username} title {"text":"🎉 ${rank.toUpperCase()}! 🎉","color":"${color}","bold":true}`
       },
       {
         name: "Broadcast to all",
-        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank §${rank === 'vip' ? 'a' : (rank === 'legend' ? 'e' : (rank === 'ultra' ? '5' : (rank === 'god' ? 'c' : 'b')))}§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! §6§l🎉`
+        cmd: `say §6§l🎉 Hráč §e${username} §6§lsi zakoupil rank ${legacy}§l${rank.toUpperCase()}§6§l! Děkujeme za podporu! 🎉`
       }
     ]
-    // --- Změna končí zde ---
-    
-    console.log(`[GRANT-RANK] ========== SENDING NOTIFICATIONS ==========`)
-    
+
     for (const notification of notifications) {
       try {
-        console.log(`[GRANT-RANK] Sending ${notification.name}...`)
-        const notifRes = await rcon.send(notification.cmd)
-        console.log(`[GRANT-RANK] ✅ ${notification.name} sent: "${notifRes}"`)
-        
-        // Small delay between notifications
-        await new Promise(resolve => setTimeout(resolve, 200))
-        
+        await rcon.send(notification.cmd)
+        await new Promise(res => setTimeout(res, 200))
       } catch (msgErr) {
-        console.error(`[GRANT-RANK] ⚠️  Failed to send ${notification.name}:`, msgErr)
-        // Continue with other notifications - don't stop the process
+        console.error(`[GRANT-RANK] ⚠️ Failed to send ${notification.name}:`, msgErr)
       }
     }
-    
+
     await rcon.end()
-    console.log(`[GRANT-RANK] 🔐 RCON connection closed`)
-    console.log(`[GRANT-RANK] ========== SUCCESS ==========`)
-    
   } catch (err) {
     console.error('[GRANT-RANK] ❌ RCON ERROR:', err)
-    
-    if (err instanceof Error) {
-      console.error('[GRANT-RANK] Error details:')
-      console.error('[GRANT-RANK] - Name:', err.name)
-      console.error('[GRANT-RANK] - Message:', err.message)
-      console.error('[GRANT-RANK] - Stack:', err.stack)
-    }
-    
-    console.error(`[GRANT-RANK] ========== FAILED - RCON ERROR ==========`)
     throw err
   }
 }
